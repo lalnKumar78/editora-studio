@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101020">
+<title>Editora Studio | Create Without Limits</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#101020;color:#fff}
+header{padding:20px 6%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #292943}
+.logo{font-size:24px;font-weight:bold;color:#a78bfa}
+nav a{color:#ddd;text-decoration:none;margin-left:20px;font-size:14px}
+.hero{text-align:center;padding:65px 20px 45px}
+.hero h1{font-size:clamp(32px,6vw,55px);margin:0 0 15px}
+.hero h1 span{color:#a78bfa}
+.hero p{color:#b8b8ca;line-height:1.6}
+button,.upload{background:linear-gradient(100deg,#7654e8,#3985ed);color:white;border:0;padding:13px 22px;border-radius:9px;font-size:15px;cursor:pointer}
+.section{padding:25px 6%}
+.section h2{margin-bottom:20px}
+.tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:17px}
+.tool{background:#1c1c32;border:1px solid #30304b;padding:22px;border-radius:14px}
+.tool .emoji{font-size:30px}
+.tool h3{margin:12px 0 8px}
+.tool p{color:#aaaabe;font-size:14px;line-height:1.5}
+.tool button{width:100%;margin-top:8px}
+.workspace{margin:20px 6% 50px;padding:25px;background:#1c1c32;border-radius:15px}
+#preview{margin-top:20px;max-width:100%;max-height:350px;display:none;border-radius:10px}
+#fileName{color:#b8b8ca}
+footer{text-align:center;padding:25px;color:#999;border-top:1px solid #292943}
+@media(max-width:600px){nav a{margin-left:8px;font-size:12px}.hero{padding-top:45px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">✦ EDITORA STUDIO</div>
+  <nav>
+    <a href="#tools">Tools</a>
+    <a href="#workspace">Workspace</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>Create <span>Without Limits.</span></h1>
+  <p>Your creative space for video, photo, audio, AI and design.<br>
+  One studio. Endless possibilities.</p>
+  <button onclick="document.getElementById('workspace').scrollIntoView({behavior:'smooth'})">Start Creating →</button>
+</section>
+
+<section class="section" id="tools">
+  <h2>Explore Creative Tools</h2>
+  <div class="tools">
+    <div class="tool">
+      <div class="emoji">🎬</div>
+      <h3>Video Studio</h3>
+      <p>Video editing, trimming, merging, effects and export.</p>
+      <button onclick="chooseFile('video/*')">Open Video</button>
+    </div>
+    <div class="tool">
+      <div class="emoji">🖼️</div>
+      <h3>Photo Studio</h3>
+      <p>Image editing, cropping, resizing and creative designs.</p>
+      <button onclick="chooseFile('image/*')">Open Photo</button>
+    </div>
+    <div class="tool">
+      <div class="emoji">🎵</div>
+      <h3>Audio Studio</h3>
+      <p>Audio editing, voice-over and sound mixing.</p>
+      <button onclick="chooseFile('audio/*')">Open Audio</button>
+    </div>
+    <div class="tool">
+      <div class="emoji">🤖</div>
+      <h3>AI Studio</h3>
+      <p>AI image, video and creative generation.</p>
+      <button onclick="showMessage()">Explore AI</button>
+    </div>
+    <div class="tool">
+      <div class="emoji">🎙️</div>
+      <h3>Voice Studio</h3>
+      <p>Voice tools, speech and text-to-speech.</p>
+      <button onclick="showMessage()">Open Voice</button>
+    </div>
+    <div class="tool">
+      <div class="emoji">💬</div>
+      <h3>Caption Studio</h3>
+      <p>Subtitles, captions and text styling.</p>
+      <button onclick="showMessage()">Open Captions</button>
+    </div>
+  </div>
+</section>
+
+<section class="workspace" id="workspace">
+  <h2>My Workspace</h2>
+  <p>Choose a media file from your device to preview it here.</p>
+  <input type="file" id="fileInput" hidden onchange="previewFile(event)">
+  <button class="upload" onclick="document.getElementById('fileInput').click()">＋ Upload Media</button>
+  <p id="fileName">No file selected</p>
+  <img id="preview" alt="Image preview">
+  <video id="videoPreview" controls style="display:none;max-width:100%;max-height:350px"></video>
+  <audio id="audioPreview" controls style="display:none;width:100%"></audio>
+</section>
+
+<footer>
+  <p>EDITORA STUDIO © 2026</p>
+  <p>Create Without Limits.</p>
+</footer>
+
+<script>
+function chooseFile(type){
+  const input=document.getElementById('fileInput');
+  input.accept=type;
+  input.click();
+}
+function previewFile(event){
+  const file=event.target.files[0];
+  if(!file)return;
+  document.getElementById('fileName').textContent=file.name;
+  const url=URL.createObjectURL(file);
+  const image=document.getElementById('preview');
+  const video=document.getElementById('videoPreview');
+  const audio=document.getElementById('audioPreview');
+  image.style.display='none';
+  video.style.display='none';
+  audio.style.display='none';
+  if(file.type.startsWith('image/')){
+    image.src=url;image.style.display='block';
+  }else if(file.type.startsWith('video/')){
+    video.src=url;video.style.display='block';
+  }else if(file.type.startsWith('audio/')){
+    audio.src=url;audio.style.display='block';
+  }
+}
+function showMessage(){
+  alert('This tool will be added in the next development stage.');
+}
+</script>
+</body>
+</html>
