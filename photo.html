@@ -1,336 +1,136 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#101020">
 <title>Photo Studio | Editora Studio</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#101020;color:white;font-family:Arial,sans-serif}
-header{padding:18px 5%;display:flex;justify-content:space-between;align-items:center;background:#18182b;border-bottom:1px solid #33334c}
-.logo{font-weight:bold;color:#a78bfa;font-size:21px}
-a{color:#c4b5fd;text-decoration:none}
-main{max-width:1100px;margin:auto;padding:25px 16px}
-h1{font-size:30px}
-.sub{color:#aaaabe}
-.panel{background:#1c1c32;padding:20px;border-radius:14px;margin:18px 0}
-button{border:0;border-radius:8px;padding:12px 16px;background:#7654e8;color:white;cursor:pointer;font-size:14px}
-button.secondary{background:#34344f}
-.preview{background:#131322;border:1px dashed #555575;border-radius:12px;min-height:260px;display:flex;align-items:center;justify-content:center;padding:12px;overflow:auto}
-canvas{max-width:100%;height:auto;display:none}
-.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
-.control{background:#25253d;padding:14px;border-radius:10px}
-.control label{display:flex;justify-content:space-between;margin-bottom:12px;font-size:14px}
-input[type=range]{width:100%;accent-color:#a78bfa}
-input[type=number]{width:100%;padding:10px;border-radius:7px;border:1px solid #555575;background:#17172a;color:white}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
-input[type=file]{display:none}
-#message{color:#b8b8ca;font-size:14px}
-@media(max-width:600px){h1{font-size:25px}header{padding:15px}}
+:root{--bg:#0c0d18;--panel:#17192a;--panel2:#20233a;--line:#30344f;--text:#f5f5ff;--muted:#a7abc3;--accent:#9b7cff;--accent2:#6f55e8}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 Inter,system-ui,Arial,sans-serif}
+header{height:66px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;background:#121425;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.logo{font-weight:800;letter-spacing:.5px;color:#c7b8ff}.logo span{color:white}a{color:#c7b8ff;text-decoration:none}
+main{max-width:1400px;margin:auto;padding:22px}.intro{display:flex;justify-content:space-between;gap:15px;align-items:end;margin-bottom:18px}.intro h1{margin:0;font-size:28px}.muted{color:var(--muted)}
+.top-actions,.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+button,.filebtn,select,input[type=color]{border:1px solid var(--line);border-radius:9px;background:var(--panel2);color:var(--text);padding:10px 13px;font:inherit;cursor:pointer}
+button:hover,.filebtn:hover{border-color:var(--accent)}button.primary,.filebtn.primary{background:var(--accent2);border-color:var(--accent2);color:white}
+button:disabled{opacity:.4;cursor:not-allowed}input,select,textarea{accent-color:var(--accent)}input[type=file]{display:none}
+.workspace{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:16px;align-items:start}
+.stage-panel,.editor-panel{background:var(--panel);border:1px solid var(--line);border-radius:15px;overflow:hidden}
+.stage-toolbar{padding:12px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.stage{min-height:530px;background:radial-gradient(#252741 1px,transparent 1px);background-size:18px 18px;display:flex;align-items:center;justify-content:center;padding:22px;overflow:auto}
+#canvas{display:none;max-width:100%;max-height:72vh;object-fit:contain;box-shadow:0 12px 40px #0008;background:#fff}
+.empty{text-align:center;color:var(--muted);max-width:360px}.empty .big{font-size:48px;margin-bottom:10px}
+.status{padding:10px 14px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);min-height:40px}
+.tabs{display:flex;overflow:auto;border-bottom:1px solid var(--line);gap:2px;padding:7px}
+.tab{white-space:nowrap;padding:9px 11px;border:0;background:transparent;color:var(--muted)}.tab.active{background:#30294c;color:white}
+.tool-content{padding:15px;max-height:720px;overflow:auto}.tool-content h3{margin:0 0 12px;font-size:16px}
+.section{padding:13px 0;border-bottom:1px solid var(--line)}.section:last-child{border:0}
+.field{margin:12px 0}.field label{display:flex;justify-content:space-between;gap:8px;color:#d9daeb;font-size:13px;margin-bottom:7px}
+input[type=range]{width:100%}input[type=text],input[type=number],textarea,select{width:100%;background:#101222;border:1px solid var(--line);padding:10px;border-radius:8px;color:white}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.preset-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.preset{padding:9px 5px;font-size:12px;min-height:52px}.preset.active{border-color:#b39cff;background:#39305b}
+small{color:var(--muted)}.hint{font-size:12px;color:var(--muted);margin-top:7px}
+.badge{font-size:11px;border:1px solid #514777;border-radius:20px;padding:3px 7px;color:#d3c7ff}
+#cropBox{display:none}.divider{height:1px;background:var(--line);margin:12px 0}
+@media(max-width:900px){.workspace{grid-template-columns:1fr}.stage{min-height:360px}.tool-content{max-height:none}.intro{align-items:start;flex-direction:column}}
+@media(max-width:520px){main{padding:12px}.intro h1{font-size:23px}.stage{min-height:270px;padding:10px}header{padding:0 13px}.preset-grid{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
-<header>
- <div class="logo">✦ EDITORA STUDIO</div>
- <a href="index.html">← Home</a>
-</header>
-
+<header><div class="logo">✦ EDITORA <span>STUDIO</span></div><a href="index.html">← Home</a></header>
 <main>
- <h1>🖼️ Photo Studio</h1>
- <p class="sub">Edit your photos directly in your browser.</p>
-
- <section class="panel">
-  <button onclick="document.getElementById('photoFile').click()">＋ Upload Photo</button>
-  <input id="photoFile" type="file" accept="image/*">
-  <p id="message">Choose a photo to begin editing.</p>
-  <div class="preview">
-   <canvas id="canvas"></canvas>
-   <span id="empty">Your photo preview will appear here.</span>
-  </div>
- </section>
-
- <section class="panel">
-  <h3>Adjustments</h3>
-  <div class="controls">
-   <div class="control">
-    <label>Brightness <span id="brightnessValue">100%</span></label>
-    <input id="brightness" type="range" min="0" max="200" value="100">
+ <div class="intro"><div><h1>Photo Studio</h1><div class="muted">A complete browser-based photo editor</div></div>
+ <div class="top-actions"><label class="filebtn primary" for="upload">＋ Upload photo</label><input id="upload" type="file" accept="image/*"><button id="undo">↶ Undo</button><button id="redo">↷ Redo</button><button id="reset">Reset</button><button class="primary" id="download">Download</button></div></div>
+ <div class="workspace">
+  <section class="stage-panel">
+   <div class="stage-toolbar"><div class="row"><button id="before">Hold: Before</button><button id="zoomOut">−</button><span id="zoomLabel" class="muted">100%</span><button id="zoomIn">＋</button><button id="fit">Fit</button></div><div class="row"><select id="format"><option value="image/png">PNG</option><option value="image/jpeg">JPG</option><option value="image/webp">WebP</option></select><select id="quality"><option value="0.92">High quality</option><option value="0.8">Smaller file</option><option value="1">Maximum</option></select></div></div>
+   <div class="stage"><div class="empty" id="empty"><div class="big">🖼️</div><b>Start editing your photo</b><p>Upload an image to use filters, effects, text, frames, crop and more.</p><label class="filebtn primary" for="upload">Choose photo</label></div><canvas id="canvas"></canvas></div>
+   <div class="status" id="status">Ready. Your photo stays in this browser; it is not uploaded by this editor.</div>
+  </section>
+  <aside class="editor-panel">
+   <nav class="tabs">
+    <button class="tab active" data-tab="adjust">Adjust</button><button class="tab" data-tab="filters">Filters</button><button class="tab" data-tab="effects">Effects</button><button class="tab" data-tab="text">Text</button><button class="tab" data-tab="crop">Crop</button><button class="tab" data-tab="frames">Frames</button><button class="tab" data-tab="ai">AI tools</button>
+   </nav>
+   <div class="tool-content" id="tools">
+    <div class="pane" data-pane="adjust">
+     <h3>Light & colour</h3>
+     <div id="adjustments"></div>
+     <div class="section"><h3>Transform</h3><div class="grid2"><button id="rotateL">↶ Rotate left</button><button id="rotateR">↷ Rotate right</button><button id="flipH">↔ Flip horizontal</button><button id="flipV">↕ Flip vertical</button></div></div>
+     <div class="section"><button id="resetAdjust">Reset adjustments</button></div>
+    </div>
+    <div class="pane" data-pane="filters" hidden><h3>Filter styles <span class="badge">30 presets</span></h3><p class="hint">Choose a look; adjust intensity below.</p><div class="preset-grid" id="filterGrid"></div><div class="field"><label>Filter intensity <output id="filterIntensityOut">100%</output></label><input id="filterIntensity" type="range" min="0" max="100" value="100"></div></div>
+    <div class="pane" data-pane="effects" hidden><h3>Creative effects</h3><div class="preset-grid" id="effectGrid"></div><div class="field"><label>Effect strength <output id="effectStrengthOut">50%</output></label><input id="effectStrength" type="range" min="0" max="100" value="50"></div><div class="hint">Effects are rendered locally on the photo.</div></div>
+    <div class="pane" data-pane="text" hidden><h3>Text & captions</h3><div class="field"><label>Caption text</label><textarea id="caption" rows="3" placeholder="Write your caption here"></textarea></div><div class="grid2"><div class="field"><label>Font size</label><input id="fontSize" type="number" min="8" max="240" value="48"></div><div class="field"><label>Font</label><select id="font"><option>Arial</option><option>Georgia</option><option>Impact</option><option>Verdana</option><option>Courier New</option><option>Times New Roman</option></select></div><div class="field"><label>Text colour</label><input id="textColor" type="color" value="#ffffff"></div><div class="field"><label>Outline</label><input id="outlineColor" type="color" value="#111111"></div></div><div class="field"><label>Position</label><select id="textPosition"><option value="bottom">Bottom centre</option><option value="top">Top centre</option><option value="center">Middle centre</option><option value="left">Left centre</option><option value="right">Right centre</option></select></div><div class="field"><label>Caption style</label><select id="captionStyle"><option value="shadow">Shadow</option><option value="outline">Outlined</option><option value="box">Solid label</option><option value="plain">Clean</option></select></div><div class="row"><button class="primary" id="addText">Apply text</button><button id="clearText">Remove text</button></div><div class="section"><h3>Quick caption styles</h3><div class="preset-grid" id="captionPresets"></div></div></div>
+    <div class="pane" data-pane="crop" hidden><h3>Crop & resize</h3><div class="field"><label>Aspect ratio</label><select id="aspect"><option value="free">Free crop</option><option value="1:1">Square 1:1</option><option value="4:5">Portrait 4:5</option><option value="3:4">Portrait 3:4</option><option value="9:16">Story 9:16</option><option value="16:9">Landscape 16:9</option><option value="4:3">Landscape 4:3</option></select></div><div class="grid2"><div class="field"><label>Width (px)</label><input id="cropW" type="number" min="1" placeholder="Width"></div><div class="field"><label>Height (px)</label><input id="cropH" type="number" min="1" placeholder="Height"></div></div><div class="row"><button class="primary" id="applyCrop">Apply centre crop</button><button id="resetCrop">Reset crop</button></div><div class="divider"></div><h3>Resize image</h3><div class="grid2"><div class="field"><label>Width</label><input id="resizeW" type="number" min="1" max="12000" placeholder="px"></div><div class="field"><label>Height</label><input id="resizeH" type="number" min="1" max="12000" placeholder="px"></div></div><label><input type="checkbox" id="keepRatio" checked> Keep proportions</label><div class="row" style="margin-top:12px"><button class="primary" id="applyResize">Resize</button></div></div>
+    <div class="pane" data-pane="frames" hidden><h3>Frames, borders & stickers</h3><div class="preset-grid" id="frameGrid"></div><div class="field"><label>Border thickness <output id="borderOut">18 px</output></label><input id="borderSize" type="range" min="0" max="100" value="18"></div><div class="field"><label>Border colour</label><input id="borderColor" type="color" value="#ffffff"></div><div class="field"><label>Sticker / emoji</label><select id="sticker"><option value="">None</option><option>✨</option><option>❤️</option><option>⭐</option><option>🌸</option><option>🔥</option><option>🌈</option><option>🦋</option><option>🌿</option><option>👑</option><option>💫</option></select></div><div class="field"><label>Sticker size <output id="stickerOut">64 px</output></label><input id="stickerSize" type="range" min="20" max="180" value="64"></div><button class="primary" id="applyFrame">Apply frame & sticker</button></div>
+    <div class="pane" data-pane="ai" hidden><h3>AI photo tools</h3><div class="section"><b>AI Enhance</b><p class="hint">AI upscaling and intelligent restoration need an external AI service.</p><button disabled>AI Enhance — service needed</button></div><div class="section"><b>Background remover / changer</b><p class="hint">Requires a connected background-removal model or API.</p><button disabled>Background removal — service needed</button></div><div class="section"><b>Object removal</b><p class="hint">Requires an AI inpainting service.</p><button disabled>Object removal — service needed</button></div><div class="section"><b>AI image generation & style transfer</b><p class="hint">Connect an image-generation API to enable these features. This editor does not pretend these AI actions are working yet.</p><button disabled>AI generation — service needed</button></div></div>
    </div>
-   <div class="control">
-    <label>Contrast <span id="contrastValue">100%</span></label>
-    <input id="contrast" type="range" min="0" max="200" value="100">
-   </div>
-   <div class="control">
-    <label>Saturation <span id="saturationValue">100%</span></label>
-    <input id="saturation" type="range" min="0" max="200" value="100">
-   </div>
-  </div>
- </section>
-
- <section class="panel">
-  <h3>Filters</h3>
-  <div class="actions">
-   <button class="secondary" onclick="setFilter('none')">Original</button>
-   <button class="secondary" onclick="setFilter('grayscale(100%)')">Black & White</button>
-   <button class="secondary" onclick="setFilter('sepia(100%)')">Sepia</button>
-   <button class="secondary" onclick="setFilter('saturate(160%)')">Vivid</button>
-  </div>
- </section>
-
- <section class="panel">
-  <h3>✂️ Crop & Resize</h3>
-  <p class="sub">Crop your photo using percentages.</p>
-  <div class="controls">
-   <div class="control">
-    <label>Left (X) %</label>
-    <input id="cropX" type="number" min="0" max="99" value="0">
-   </div>
-   <div class="control">
-    <label>Top (Y) %</label>
-    <input id="cropY" type="number" min="0" max="99" value="0">
-   </div>
-   <div class="control">
-    <label>Width %</label>
-    <input id="cropW" type="number" min="1" max="100" value="100">
-   </div>
-   <div class="control">
-    <label>Height %</label>
-    <input id="cropH" type="number" min="1" max="100" value="100">
-   </div>
-  </div>
-  <div class="actions">
-   <button onclick="cropPhoto()">Apply Crop</button>
-   <button class="secondary" onclick="resetCropFields()">Reset Crop Values</button>
-  </div>
-
-  <h3>Resize Image</h3>
-  <div class="controls">
-   <div class="control">
-    <label>New Width (px)</label>
-    <input id="resizeW" type="number" min="1" max="12000" placeholder="e.g. 1920">
-   </div>
-   <div class="control">
-    <label>New Height (px)</label>
-    <input id="resizeH" type="number" min="1" max="12000" placeholder="e.g. 1080">
-   </div>
-  </div>
-  <div class="actions">
-   <button onclick="resizePhoto()">Apply Resize</button>
-  </div>
- </section>
-
- <section class="panel">
-  <h3>Transform & Export</h3>
-  <div class="actions">
-   <button class="secondary" onclick="rotate(-90)">↶ Rotate Left</button>
-   <button class="secondary" onclick="rotate(90)">↷ Rotate Right</button>
-   <button class="secondary" onclick="flip()">↔ Flip</button>
-   <button class="secondary" onclick="resetEditor()">Reset All</button>
-   <button onclick="downloadPhoto()">Download Photo</button>
-  </div>
- </section>
-
- <p class="sub">Your photo is processed locally in this browser. This editor does not upload it to a server.</p>
+  </aside>
+ </div>
 </main>
-
 <script>
-const fileInput=document.getElementById('photoFile');
-const canvas=document.getElementById('canvas');
-const ctx=canvas.getContext('2d');
-const empty=document.getElementById('empty');
-const message=document.getElementById('message');
-
-let originalImage=null;
-let rotation=0;
-let flipped=false;
-let extraFilter='none';
-let fileName='editora-photo';
-
-const sliders=['brightness','contrast','saturation'];
-
-fileInput.addEventListener('change',function(){
- const file=this.files[0];
- if(!file)return;
- if(!file.type.startsWith('image/')){
-  message.textContent='Please choose a valid image file.';
-  return;
- }
- const reader=new FileReader();
- reader.onload=function(e){
-  const img=new Image();
-  img.onload=function(){
-   originalImage=img;
-   fileName=file.name.replace(/\.[^.]+$/,'');
-   rotation=0;
-   flipped=false;
-   extraFilter='none';
-   resetValues();
-   canvas.style.display='block';
-   empty.style.display='none';
-   message.textContent='Photo loaded: '+file.name;
-   render();
-  };
-  img.onerror=function(){message.textContent='Could not open this image.'};
-  img.src=e.target.result;
- };
- reader.readAsDataURL(file);
-});
-
-sliders.forEach(id=>{
- document.getElementById(id).addEventListener('input',()=>{
-  document.getElementById(id+'Value').textContent=
-   document.getElementById(id).value+'%';
-  render();
- });
-});
-
-function render(){
- if(!originalImage)return;
- const w=originalImage.naturalWidth;
- const h=originalImage.naturalHeight;
- const sideways=Math.abs(rotation)%180===90;
- canvas.width=sideways?h:w;
- canvas.height=sideways?w:h;
- ctx.save();
- ctx.translate(canvas.width/2,canvas.height/2);
- ctx.rotate(rotation*Math.PI/180);
- ctx.scale(flipped?-1:1,1);
- ctx.filter=
-  'brightness('+brightness.value+'%) '+
-  'contrast('+contrast.value+'%) '+
-  'saturate('+saturation.value+'%) '+
-  extraFilter;
- ctx.drawImage(originalImage,-w/2,-h/2,w,h);
- ctx.restore();
- ctx.filter='none';
-}
-
-function setFilter(filter){
- if(!originalImage)return;
- extraFilter=filter;
- render();
-}
-
-function rotate(degrees){
- if(!originalImage)return;
- rotation=(rotation+degrees+360)%360;
- render();
-}
-
-function flip(){
- if(!originalImage)return;
- flipped=!flipped;
- render();
-}
-
-function resetValues(){
- sliders.forEach(id=>{
-  document.getElementById(id).value=100;
-  document.getElementById(id+'Value').textContent='100%';
- });
-}
-
-function resetEditor(){
- if(!originalImage)return;
- rotation=0;
- flipped=false;
- extraFilter='none';
- resetValues();
- render();
-}
-
-function resetCropFields(){
- document.getElementById('cropX').value=0;
- document.getElementById('cropY').value=0;
- document.getElementById('cropW').value=100;
- document.getElementById('cropH').value=100;
-}
-
-function applyCanvasAsImage(sourceCanvas,successMessage){
- const img=new Image();
- img.onload=()=>{
-  originalImage=img;
-  rotation=0;
-  flipped=false;
-  extraFilter='none';
-  resetValues();
-  message.textContent=successMessage;
-  render();
- };
- img.onerror=()=>{message.textContent='Could not process this image.'};
- img.src=sourceCanvas.toDataURL('image/png');
-}
-
-function cropPhoto(){
- if(!originalImage){message.textContent='Upload a photo first.';return;}
- const x=Number(document.getElementById('cropX').value);
- const y=Number(document.getElementById('cropY').value);
- const w=Number(document.getElementById('cropW').value);
- const h=Number(document.getElementById('cropH').value);
-
- if(![x,y,w,h].every(Number.isFinite)||x<0||y<0||w<=0||h<=0||x+w>100||y+h>100){
-  message.textContent='Crop values must fit inside the image (0–100%).';
-  return;
- }
-
- const sx=Math.round(canvas.width*x/100);
- const sy=Math.round(canvas.height*y/100);
- const sw=Math.max(1,Math.round(canvas.width*w/100));
- const sh=Math.max(1,Math.round(canvas.height*h/100));
-
- const out=document.createElement('canvas');
- out.width=sw;
- out.height=sh;
- out.getContext('2d').drawImage(canvas,sx,sy,sw,sh,0,0,sw,sh);
-
- applyCanvasAsImage(out,'Crop applied successfully.');
- resetCropFields();
-}
-
-function resizePhoto(){
- if(!originalImage){message.textContent='Upload a photo first.';return;}
- const w=Number(document.getElementById('resizeW').value);
- const h=Number(document.getElementById('resizeH').value);
-
- if(!Number.isInteger(w)||!Number.isInteger(h)||w<1||h<1||w>12000||h>12000){
-  message.textContent='Enter width and height from 1 to 12000 pixels.';
-  return;
- }
-
- const out=document.createElement('canvas');
- out.width=w;
- out.height=h;
- const outCtx=out.getContext('2d');
- outCtx.imageSmoothingEnabled=true;
- outCtx.imageSmoothingQuality='high';
- outCtx.drawImage(canvas,0,0,w,h);
-
- applyCanvasAsImage(out,'Resize applied: '+w+' × '+h+' px.');
- document.getElementById('resizeW').value='';
- document.getElementById('resizeH').value='';
-}
-
-function downloadPhoto(){
- if(!originalImage){
-  message.textContent='Upload a photo first.';
-  return;
- }
- canvas.toBlob(function(blob){
-  if(!blob){
-   message.textContent='Export failed. Try another image.';
-   return;
-  }
-  const url=URL.createObjectURL(blob);
-  const link=document.createElement('a');
-  link.href=url;
-  link.download=fileName+'-edited.png';
-  link.click();
-  setTimeout(()=>URL.revokeObjectURL(url),2000);
-  message.textContent='Your edited photo is ready to save.';
- },'image/png');
-}
+const $=id=>document.getElementById(id), canvas=$('canvas'),ctx=canvas.getContext('2d');
+let source=null,base=null,zoom=1,rotation=0,flipX=1,flipY=1,filter='Original',effect='None',textLayer=null,frame='None',history=[],future=[],showBefore=false;
+const defaults={brightness:100,contrast:100,saturation:100,warmth:0,hue:0,blur:0,fade:0,vignette:0,grain:0};
+let vals={...defaults},filterIntensity=100,effectStrength=50,borderSize=18,borderColor='#ffffff',sticker='',stickerSize=64;
+const filterDefs=[
+['Original','none'],['Vivid','saturate(1.65) contrast(1.08)'],['Vintage','sepia(.48) contrast(.92)'],['Retro','sepia(.25) saturate(1.3)'],['Cinematic','contrast(1.25) saturate(.82)'],['Noir','grayscale(1) contrast(1.35)'],['Mono','grayscale(1)'],['Warm','sepia(.22) saturate(1.2)'],['Cool','hue-rotate(18deg) saturate(.9)'],['Golden','sepia(.35) saturate(1.35)'],['Faded','contrast(.82) brightness(1.08)'],['Matte','contrast(.88) saturate(.82)'],['Dramatic','contrast(1.5) saturate(1.1)'],['Soft','brightness(1.08) contrast(.88)'],['Bright','brightness(1.18) saturate(1.15)'],['Moody','brightness(.85) contrast(1.2) saturate(.8)'],['Pastel','saturate(.75) brightness(1.1)'],['Arctic','hue-rotate(190deg) saturate(.65)'],['Rose','sepia(.18) hue-rotate(315deg)'],['Emerald','hue-rotate(75deg) saturate(1.25)'],['Lavender','hue-rotate(250deg) saturate(.8)'],['Sunset','sepia(.3) hue-rotate(335deg)'],['Ocean','hue-rotate(170deg) saturate(1.2)'],['Forest','hue-rotate(65deg) saturate(1.15)'],['Polaroid','sepia(.2) contrast(.9) brightness(1.08)'],['Cyber','hue-rotate(285deg) saturate(1.7)'],['Urban','grayscale(.55) contrast(1.3)'],['Clean','contrast(1.08) saturate(1.08)'],['Dream','blur(.3px) brightness(1.12) saturate(1.15)'],['B&W Soft','grayscale(1) contrast(.85)']];
+const effects=['None','Soft glow','Dream blur','Vintage grain','Vignette','Fade','High contrast','Duotone blue','Duotone rose','Neon mood','Film look','Soft focus'];
+function status(s){$('status').textContent=s}
+function loaded(){return !!source}
+function snapshot(){if(!loaded())return;history.push(JSON.stringify({vals,filter,filterIntensity,effect,effectStrength,rotation,flipX,flipY,textLayer,frame,borderSize,borderColor,sticker,stickerSize}));if(history.length>35)history.shift();future=[];buttons()}
+function buttons(){$('undo').disabled=!history.length;$('redo').disabled=!future.length}
+function state(){return {vals:{...vals},filter,filterIntensity,effect,effectStrength,rotation,flipX,flipY,textLayer:textLayer?{...textLayer}:null,frame,borderSize,borderColor,sticker,stickerSize}}
+function restore(s){Object.assign(vals,s.vals);filter=s.filter;filterIntensity=s.filterIntensity;effect=s.effect;effectStrength=s.effectStrength;rotation=s.rotation;flipX=s.flipX;flipY=s.flipY;textLayer=s.textLayer;frame=s.frame;borderSize=s.borderSize;borderColor=s.borderColor;sticker=s.sticker;stickerSize=s.stickerSize;syncUI();render()}
+function syncUI(){for(const k in vals){const el=$(k);if(el){el.value=vals[k];$(k+'Out').textContent=vals[k]+(k==='warmth'||k==='hue'?'':'%')}}$('filterIntensity').value=filterIntensity;$('filterIntensityOut').textContent=filterIntensity+'%';$('effectStrength').value=effectStrength;$('effectStrengthOut').textContent=effectStrength+'%';$('borderSize').value=borderSize;$('borderOut').textContent=borderSize+' px';$('borderColor').value=borderColor;$('sticker').value=sticker;$('stickerSize').value=stickerSize;$('stickerOut').textContent=stickerSize+' px';}
+function setTab(tab){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));document.querySelectorAll('.pane').forEach(p=>p.hidden=p.dataset.pane!==tab)}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+function loadImage(file){if(!file||!file.type.startsWith('image/'))return status('Please select a valid image.');const reader=new FileReader();reader.onload=e=>{const im=new Image();im.onload=()=>{source=im;base=document.createElement('canvas');base.width=im.naturalWidth;base.height=im.naturalHeight;base.getContext('2d').drawImage(im,0,0);canvas.style.display='block';$('empty').style.display='none';rotation=0;flipX=flipY=1;vals={...defaults};filter='Original';effect='None';textLayer=null;frame='None';history=[];future=[];zoom=1;render();buttons();status(`Loaded ${file.name} · ${im.naturalWidth} × ${im.naturalHeight}px`)};im.src=e.target.result};reader.readAsDataURL(file)}
+$('upload').addEventListener('change',e=>loadImage(e.target.files[0]));
+function currentFilter(){let def=filterDefs.find(x=>x[0]===filter)?.[1]||'none';if(def==='none'||filterIntensity===0)return 'none';return def}
+function render(){if(!loaded())return;const swap=Math.abs(rotation)%180===90;const w=swap?base.height:base.width,h=swap?base.width:base.height;canvas.width=w;canvas.height=h;ctx.save();ctx.translate(w/2,h/2);ctx.rotate(rotation*Math.PI/180);ctx.scale(flipX,flipY);
+let f=`brightness(${vals.brightness}%) contrast(${vals.contrast}%) saturate(${vals.saturation}%) sepia(${Math.max(0,vals.warmth)/100}) hue-rotate(${vals.hue}deg) blur(${vals.blur/10}px)`;let ff=currentFilter();if(ff!=='none'&&filterIntensity>0)f+=' '+ff;ctx.filter=f;ctx.drawImage(base,-base.width/2,-base.height/2);ctx.restore();ctx.filter='none';
+if(vals.fade>0){ctx.fillStyle=`rgba(245,235,220,${vals.fade/300})`;ctx.fillRect(0,0,w,h)}
+if(effect!=='None'){const a=effectStrength/100; if(effect==='Vignette'||vals.vignette>0){let g=ctx.createRadialGradient(w/2,h/2,Math.min(w,h)*.15,w/2,h/2,Math.max(w,h)*.72);g.addColorStop(0,'transparent');g.addColorStop(1,`rgba(0,0,0,${a*.75})`);ctx.fillStyle=g;ctx.fillRect(0,0,w,h)}
+if(effect==='Soft glow'||effect==='Dream blur'||effect==='Soft focus'){ctx.save();ctx.globalAlpha=a*.2;ctx.filter=`blur(${2+a*7}px)`;ctx.drawImage(canvas,0,0);ctx.restore()}
+if(effect==='Fade'||effect==='Film look'){ctx.fillStyle=`rgba(240,220,180,${a*.16})`;ctx.fillRect(0,0,w,h)}
+if(effect==='Duotone blue'||effect==='Duotone rose'){ctx.fillStyle=effect==='Duotone blue'?`rgba(25,85,180,${a*.3})`:`rgba(190,55,105,${a*.25})`;ctx.fillRect(0,0,w,h)}
+if(effect==='Neon mood'){ctx.fillStyle=`rgba(40,100,255,${a*.12})`;ctx.fillRect(0,0,w,h)}
+if(effect==='Vintage grain'||vals.grain>0){let n=Math.min(2500,Math.round(w*h/1800*a));for(let i=0;i<n;i++){let x=Math.random()*w,y=Math.random()*h;ctx.fillStyle=Math.random()>.5?`rgba(255,255,255,${Math.random()*.25})`:`rgba(0,0,0,${Math.random()*.25})`;ctx.fillRect(x,y,1.3,1.3)}}}
+if(vals.vignette>0&&effect!=='Vignette'){let g=ctx.createRadialGradient(w/2,h/2,Math.min(w,h)*.15,w/2,h/2,Math.max(w,h)*.7);g.addColorStop(0,'transparent');g.addColorStop(1,`rgba(0,0,0,${vals.vignette/150})`);ctx.fillStyle=g;ctx.fillRect(0,0,w,h)}
+drawFrame(w,h);drawText(w,h);drawSticker(w,h);canvas.style.transform=`scale(${zoom})`;canvas.style.transformOrigin='center center';$('zoomLabel').textContent=Math.round(zoom*100)+'%'}
+function drawFrame(w,h){if(frame==='None'&&borderSize===0)return;let b=borderSize;if(frame==='Polaroid')b=Math.max(b,Math.round(Math.min(w,h)*.06));if(frame==='Rounded'){}if(b>0){ctx.save();ctx.strokeStyle=borderColor;ctx.lineWidth=b;ctx.strokeRect(b/2,b/2,w-b,h-b);ctx.restore()}if(frame==='Double'){ctx.save();ctx.strokeStyle=borderColor;ctx.lineWidth=Math.max(2,b/5);ctx.strokeRect(b,b,w-2*b,h-2*b);ctx.restore()}if(frame==='Film'){ctx.save();ctx.fillStyle=borderColor;let s=Math.max(7,b/2);for(let y=s;y<h-s;y+=s*2){ctx.fillRect(2,y,s,s);ctx.fillRect(w-s-2,y,s,s)}ctx.restore()}if(frame==='Polaroid'){ctx.fillStyle=borderColor;ctx.fillRect(0,h-b*.65,w,b*.65)}}
+function drawText(w,h){if(!textLayer||!textLayer.text)return;const t=textLayer;ctx.save();ctx.font=`bold ${t.size}px ${t.font}`;ctx.textAlign='center';ctx.textBaseline='middle';let x=w/2,y=h*.9;if(t.pos==='top')y=h*.1;if(t.pos==='center')y=h/2;if(t.pos==='left'){x=w*.18;y=h/2}if(t.pos==='right'){x=w*.82;y=h/2}const lines=t.text.split('\n'),lh=t.size*1.2;let yy=y-(lines.length-1)*lh/2;lines.forEach(line=>{let width=ctx.measureText(line).width;if(t.style==='box'){ctx.fillStyle='rgba(0,0,0,.58)';ctx.fillRect(x-width/2-14,yy-lh/2,width+28,lh)}if(t.style==='outline'||t.style==='shadow'){ctx.lineWidth=Math.max(2,t.size/13);ctx.strokeStyle=t.outline;ctx.strokeText(line,x,yy)}if(t.style==='shadow'){ctx.shadowColor='#000';ctx.shadowBlur=9;ctx.shadowOffsetY=3}ctx.fillStyle=t.color;ctx.fillText(line,x,yy);ctx.shadowColor='transparent';yy+=lh});ctx.restore()}
+function drawSticker(w,h){if(!sticker)return;ctx.save();ctx.font=`${stickerSize}px system-ui`;ctx.textAlign='right';ctx.textBaseline='top';ctx.fillText(sticker,w-18,18);ctx.restore()}
+function change(fn){if(!loaded())return status('Upload a photo first.');snapshot();fn();render()}
+const adjustDefs=[['brightness','Brightness',0,200,1],['contrast','Contrast',0,200,1],['saturation','Saturation',0,200,1],['warmth','Warmth',-100,100,1],['hue','Hue',-180,180,1],['blur','Blur',0,100,1],['fade','Fade',0,100,1],['vignette','Vignette',0,100,1],['grain','Grain',0,100,1]];
+adjustDefs.forEach(([id,label,min,max,step])=>{let d=document.createElement('div');d.className='field';d.innerHTML=`<label>${label}<output id="${id}Out">${vals[id]}</output></label><input id="${id}" type="range" min="${min}" max="${max}" step="${step}" value="${vals[id]}">`;$('adjustments').appendChild(d);$(id).oninput=()=>{vals[id]=+$(id).value;$(id+'Out').textContent=vals[id];render()};$(id).onchange=()=>snapshot()});
+filterDefs.forEach(([name])=>{let b=document.createElement('button');b.className='preset';b.textContent=name;b.onclick=()=>change(()=>{filter=name;document.querySelectorAll('#filterGrid button').forEach(x=>x.classList.toggle('active',x===b))});$('filterGrid').appendChild(b)});
+effects.forEach(name=>{let b=document.createElement('button');b.className='preset';b.textContent=name;b.onclick=()=>change(()=>{effect=name;document.querySelectorAll('#effectGrid button').forEach(x=>x.classList.toggle('active',x===b))});$('effectGrid').appendChild(b)});
+['None','Classic','White','Black','Double','Film','Polaroid','Rounded','Neon'].forEach(name=>{let b=document.createElement('button');b.className='preset';b.textContent=name;b.onclick=()=>change(()=>{frame=name;if(name==='White')borderColor='#ffffff';if(name==='Black')borderColor='#111111';if(name==='Neon')borderColor='#9b7cff';$('borderColor').value=borderColor});$('frameGrid').appendChild(b)});
+[['Minimal','plain'],['Bold','outline'],['Cinematic','shadow'],['Meme','box']].forEach(([n,v])=>{let b=document.createElement('button');b.className='preset';b.textContent=n;b.onclick=()=>{$('captionStyle').value=v};$('captionPresets').appendChild(b)});
+$('filterIntensity').oninput=()=>{filterIntensity=+$('filterIntensity').value;$('filterIntensityOut').textContent=filterIntensity+'%';render()};$('filterIntensity').onchange=()=>snapshot();
+$('effectStrength').oninput=()=>{effectStrength=+$('effectStrength').value;$('effectStrengthOut').textContent=effectStrength+'%';render()};$('effectStrength').onchange=()=>snapshot();
+['brightness','contrast','saturation','warmth','hue','blur','fade','vignette','grain'].forEach(id=>{if($(id))$(id).addEventListener('change',()=>snapshot())});
+$('rotateL').onclick=()=>change(()=>rotation=(rotation-90+360)%360);$('rotateR').onclick=()=>change(()=>rotation=(rotation+90)%360);$('flipH').onclick=()=>change(()=>flipX*=-1);$('flipV').onclick=()=>change(()=>flipY*=-1);
+$('resetAdjust').onclick=()=>change(()=>{vals={...defaults};filter='Original';effect='None';syncUI()});
+$('addText').onclick=()=>change(()=>{let text=$('caption').value.trim();if(!text)return status('Write a caption first.');textLayer={text,size:Math.max(8,Math.min(240,+$('fontSize').value||48)),font:$('font').value,color:$('textColor').value,outline:$('outlineColor').value,pos:$('textPosition').value,style:$('captionStyle').value}});
+$('clearText').onclick=()=>change(()=>textLayer=null);
+$('applyFrame').onclick=()=>change(()=>{frame=frame==='None'?'Classic':frame;borderSize=+$('borderSize').value;borderColor=$('borderColor').value;sticker=$('sticker').value;stickerSize=+$('stickerSize').value});
+$('borderSize').oninput=()=>{$('borderOut').textContent=$('borderSize').value+' px'};$('stickerSize').oninput=()=>{$('stickerOut').textContent=$('stickerSize').value+' px'};
+$('aspect').onchange=()=>{let [a,b]=($('aspect').value==='free'?'0:0':$('aspect').value).split(':').map(Number);if(a){$('cropW').value=Math.round(base?.width||1000);$('cropH').value=Math.round((base?.width||1000)*b/a)}};
+$('applyCrop').onclick=()=>change(()=>{let w=+$('cropW').value||canvas.width,h=+$('cropH').value||canvas.height;w=Math.min(w,canvas.width);h=Math.min(h,canvas.height);let ratio=w/h,ar=$('aspect').value;if(ar!=='free'){let [a,b]=ar.split(':').map(Number);ratio=a/b;if(canvas.width/canvas.height>ratio)w=canvas.height*ratio;else h=canvas.width/ratio}let x=(canvas.width-w)/2,y=(canvas.height-h)/2;let out=document.createElement('canvas');out.width=Math.round(w);out.height=Math.round(h);out.getContext('2d').drawImage(canvas,x,y,w,h,0,0,out.width,out.height);replaceBase(out);status('Centre crop applied.')});
+$('resetCrop').onclick=()=>{$('cropW').value='';$('cropH').value='';$('aspect').value='free'};
+function replaceBase(c){let im=new Image();im.onload=()=>{base=c;source=im;rotation=0;flipX=flipY=1;vals={...defaults};filter='Original';effect='None';textLayer=null;frame='None';render()};im.src=c.toDataURL('image/png')}
+$('keepRatio').onchange=()=>{};$('resizeW').oninput=()=>{if($('keepRatio').checked&&base&&$('resizeW').value)$('resizeH').value=Math.round(+$('resizeW').value*base.height/base.width)};$('resizeH').oninput=()=>{if($('keepRatio').checked&&base&&$('resizeH').value)$('resizeW').value=Math.round(+$('resizeH').value*base.width/base.height)};
+$('applyResize').onclick=()=>change(()=>{let w=+$('resizeW').value,h=+$('resizeH').value;if(!w||!h||w>12000||h>12000)return status('Enter valid dimensions up to 12000 px.');let c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(canvas,0,0,w,h);replaceBase(c);status(`Resized to ${w} × ${h}px`)});
+$('undo').onclick=()=>{if(!history.length)return;future.push(JSON.stringify(state()));restore(JSON.parse(history.pop()));buttons()};$('redo').onclick=()=>{if(!future.length)return;history.push(JSON.stringify(state()));restore(JSON.parse(future.pop()));buttons()};
+$('reset').onclick=()=>{if(!loaded())return;change(()=>{rotation=0;flipX=flipY=1;vals={...defaults};filter='Original';effect='None';textLayer=null;frame='None';borderSize=18;sticker='';syncUI()});status('Editor settings reset. Original upload is preserved.')};
+$('before').onpointerdown=()=>{if(!loaded())return;showBefore=true;ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(base,0,0,canvas.width,canvas.height)};$('before').onpointerup=$('before').onpointerleave=()=>{if(showBefore){showBefore=false;render()}};
+$('zoomIn').onclick=()=>{zoom=Math.min(2.5,zoom+.1);render()};$('zoomOut').onclick=()=>{zoom=Math.max(.3,zoom-.1);render()};$('fit').onclick=()=>{zoom=1;render()};
+$('download').onclick=()=>{if(!loaded())return status('Upload a photo first.');let type=$('format').value,q=+$('quality').value;canvas.toBlob(blob=>{if(!blob)return status('Export failed.');let url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='editora-edited-photo.'+(type==='image/jpeg'?'jpg':type==='image/webp'?'webp':'png');a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);status('Export complete. Your edited photo has been downloaded.')},type,q)};
+buttons();setTab('adjust');
 </script>
-</body>
-</html>
+</body></html>
