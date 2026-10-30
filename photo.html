@@ -1,0 +1,222 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101020">
+<title>Photo Studio | Editora Studio</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101020;color:white;font-family:Arial,sans-serif}
+header{padding:18px 5%;display:flex;justify-content:space-between;align-items:center;background:#18182b;border-bottom:1px solid #33334c}
+.logo{font-weight:bold;color:#a78bfa;font-size:21px}
+a{color:#c4b5fd;text-decoration:none}
+main{max-width:1100px;margin:auto;padding:25px 16px}
+h1{font-size:30px}
+.sub{color:#aaaabe}
+.panel{background:#1c1c32;padding:20px;border-radius:14px;margin:18px 0}
+button,.upload{border:0;border-radius:8px;padding:12px 16px;background:#7654e8;color:white;cursor:pointer;font-size:14px}
+button.secondary{background:#34344f}
+button:disabled{opacity:.4;cursor:not-allowed}
+.preview{background:#131322;border:1px dashed #555575;border-radius:12px;min-height:260px;display:flex;align-items:center;justify-content:center;padding:12px;overflow:auto}
+canvas{max-width:100%;height:auto;display:none}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
+.control{background:#25253d;padding:14px;border-radius:10px}
+.control label{display:flex;justify-content:space-between;margin-bottom:12px;font-size:14px}
+input[type=range]{width:100%;accent-color:#a78bfa}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
+input[type=file]{display:none}
+#message{color:#b8b8ca;font-size:14px}
+@media(max-width:600px){h1{font-size:25px}header{padding:15px}}
+</style>
+</head>
+<body>
+<header>
+ <div class="logo">✦ EDITORA STUDIO</div>
+ <a href="index.html">← Home</a>
+</header>
+
+<main>
+ <h1>🖼️ Photo Studio</h1>
+ <p class="sub">Edit your photos directly in your browser.</p>
+
+ <section class="panel">
+  <button onclick="document.getElementById('photoFile').click()">＋ Upload Photo</button>
+  <input id="photoFile" type="file" accept="image/*">
+  <p id="message">Choose a photo to begin editing.</p>
+  <div class="preview">
+   <canvas id="canvas"></canvas>
+   <span id="empty">Your photo preview will appear here.</span>
+  </div>
+ </section>
+
+ <section class="panel">
+  <h3>Adjustments</h3>
+  <div class="controls">
+   <div class="control">
+    <label>Brightness <span id="brightnessValue">100%</span></label>
+    <input id="brightness" type="range" min="0" max="200" value="100">
+   </div>
+   <div class="control">
+    <label>Contrast <span id="contrastValue">100%</span></label>
+    <input id="contrast" type="range" min="0" max="200" value="100">
+   </div>
+   <div class="control">
+    <label>Saturation <span id="saturationValue">100%</span></label>
+    <input id="saturation" type="range" min="0" max="200" value="100">
+   </div>
+  </div>
+ </section>
+
+ <section class="panel">
+  <h3>Filters</h3>
+  <div class="actions">
+   <button class="secondary" onclick="setFilter('none')">Original</button>
+   <button class="secondary" onclick="setFilter('grayscale(100%)')">Black & White</button>
+   <button class="secondary" onclick="setFilter('sepia(100%)')">Sepia</button>
+   <button class="secondary" onclick="setFilter('saturate(160%)')">Vivid</button>
+  </div>
+ </section>
+
+ <section class="panel">
+  <h3>Transform & Export</h3>
+  <div class="actions">
+   <button class="secondary" onclick="rotate(-90)">↶ Rotate Left</button>
+   <button class="secondary" onclick="rotate(90)">↷ Rotate Right</button>
+   <button class="secondary" onclick="flip()">↔ Flip</button>
+   <button class="secondary" onclick="resetEditor()">Reset All</button>
+   <button onclick="downloadPhoto()">Download Photo</button>
+  </div>
+ </section>
+ <p class="sub">Your selected photo is processed locally in this browser. It is not uploaded to a server by this editor.</p>
+</main>
+
+<script>
+const fileInput=document.getElementById('photoFile');
+const canvas=document.getElementById('canvas');
+const ctx=canvas.getContext('2d');
+const empty=document.getElementById('empty');
+const message=document.getElementById('message');
+
+let originalImage=null;
+let rotation=0;
+let flipped=false;
+let extraFilter='none';
+let fileName='editora-photo';
+
+const sliders=['brightness','contrast','saturation'];
+
+fileInput.addEventListener('change',function(){
+ const file=this.files[0];
+ if(!file)return;
+ if(!file.type.startsWith('image/')){
+  message.textContent='Please choose a valid image file.';
+  return;
+ }
+ const reader=new FileReader();
+ reader.onload=function(e){
+  const img=new Image();
+  img.onload=function(){
+   originalImage=img;
+   fileName=file.name.replace(/\.[^.]+$/,'');
+   rotation=0;
+   flipped=false;
+   extraFilter='none';
+   resetValues();
+   canvas.style.display='block';
+   empty.style.display='none';
+   message.textContent='Photo loaded: '+file.name;
+   render();
+  };
+  img.onerror=function(){message.textContent='Could not open this image.'};
+  img.src=e.target.result;
+ };
+ reader.readAsDataURL(file);
+});
+
+sliders.forEach(id=>{
+ document.getElementById(id).addEventListener('input',()=>{
+  document.getElementById(id+'Value').textContent=
+   document.getElementById(id).value+'%';
+  render();
+ });
+});
+
+function render(){
+ if(!originalImage)return;
+ const w=originalImage.naturalWidth;
+ const h=originalImage.naturalHeight;
+ const sideways=Math.abs(rotation)%180===90;
+ canvas.width=sideways?h:w;
+ canvas.height=sideways?w:h;
+ ctx.save();
+ ctx.translate(canvas.width/2,canvas.height/2);
+ ctx.rotate(rotation*Math.PI/180);
+ ctx.scale(flipped?-1:1,1);
+ ctx.filter=
+  'brightness('+brightness.value+'%) '+
+  'contrast('+contrast.value+'%) '+
+  'saturate('+saturation.value+'%) '+
+  extraFilter;
+ ctx.drawImage(originalImage,-w/2,-h/2,w,h);
+ ctx.restore();
+ ctx.filter='none';
+}
+
+function setFilter(filter){
+ if(!originalImage)return;
+ extraFilter=filter;
+ render();
+}
+
+function rotate(degrees){
+ if(!originalImage)return;
+ rotation=(rotation+degrees+360)%360;
+ render();
+}
+
+function flip(){
+ if(!originalImage)return;
+ flipped=!flipped;
+ render();
+}
+
+function resetValues(){
+ sliders.forEach(id=>{
+  document.getElementById(id).value=100;
+  document.getElementById(id+'Value').textContent='100%';
+ });
+}
+
+function resetEditor(){
+ if(!originalImage)return;
+ rotation=0;
+ flipped=false;
+ extraFilter='none';
+ resetValues();
+ render();
+}
+
+function downloadPhoto(){
+ if(!originalImage){
+  message.textContent='Upload a photo first.';
+  return;
+ }
+ canvas.toBlob(function(blob){
+  if(!blob){
+   message.textContent='Export failed. Try another image.';
+   return;
+  }
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement('a');
+  link.href=url;
+  link.download=fileName+'-edited.png';
+  link.click();
+  setTimeout(()=>URL.revokeObjectURL(url),2000);
+  message.textContent='Your edited photo is ready to save.';
+ },'image/png');
+}
+</script>
+</body>
+</html>
