@@ -16,15 +16,15 @@ main{max-width:1100px;margin:auto;padding:25px 16px}
 h1{font-size:30px}
 .sub{color:#aaaabe}
 .panel{background:#1c1c32;padding:20px;border-radius:14px;margin:18px 0}
-button,.upload{border:0;border-radius:8px;padding:12px 16px;background:#7654e8;color:white;cursor:pointer;font-size:14px}
+button{border:0;border-radius:8px;padding:12px 16px;background:#7654e8;color:white;cursor:pointer;font-size:14px}
 button.secondary{background:#34344f}
-button:disabled{opacity:.4;cursor:not-allowed}
 .preview{background:#131322;border:1px dashed #555575;border-radius:12px;min-height:260px;display:flex;align-items:center;justify-content:center;padding:12px;overflow:auto}
 canvas{max-width:100%;height:auto;display:none}
 .controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
 .control{background:#25253d;padding:14px;border-radius:10px}
 .control label{display:flex;justify-content:space-between;margin-bottom:12px;font-size:14px}
 input[type=range]{width:100%;accent-color:#a78bfa}
+input[type=number]{width:100%;padding:10px;border-radius:7px;border:1px solid #555575;background:#17172a;color:white}
 .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
 input[type=file]{display:none}
 #message{color:#b8b8ca;font-size:14px}
@@ -80,6 +80,48 @@ input[type=file]{display:none}
  </section>
 
  <section class="panel">
+  <h3>✂️ Crop & Resize</h3>
+  <p class="sub">Crop your photo using percentages.</p>
+  <div class="controls">
+   <div class="control">
+    <label>Left (X) %</label>
+    <input id="cropX" type="number" min="0" max="99" value="0">
+   </div>
+   <div class="control">
+    <label>Top (Y) %</label>
+    <input id="cropY" type="number" min="0" max="99" value="0">
+   </div>
+   <div class="control">
+    <label>Width %</label>
+    <input id="cropW" type="number" min="1" max="100" value="100">
+   </div>
+   <div class="control">
+    <label>Height %</label>
+    <input id="cropH" type="number" min="1" max="100" value="100">
+   </div>
+  </div>
+  <div class="actions">
+   <button onclick="cropPhoto()">Apply Crop</button>
+   <button class="secondary" onclick="resetCropFields()">Reset Crop Values</button>
+  </div>
+
+  <h3>Resize Image</h3>
+  <div class="controls">
+   <div class="control">
+    <label>New Width (px)</label>
+    <input id="resizeW" type="number" min="1" max="12000" placeholder="e.g. 1920">
+   </div>
+   <div class="control">
+    <label>New Height (px)</label>
+    <input id="resizeH" type="number" min="1" max="12000" placeholder="e.g. 1080">
+   </div>
+  </div>
+  <div class="actions">
+   <button onclick="resizePhoto()">Apply Resize</button>
+  </div>
+ </section>
+
+ <section class="panel">
   <h3>Transform & Export</h3>
   <div class="actions">
    <button class="secondary" onclick="rotate(-90)">↶ Rotate Left</button>
@@ -89,7 +131,8 @@ input[type=file]{display:none}
    <button onclick="downloadPhoto()">Download Photo</button>
   </div>
  </section>
- <p class="sub">Your selected photo is processed locally in this browser. It is not uploaded to a server by this editor.</p>
+
+ <p class="sub">Your photo is processed locally in this browser. This editor does not upload it to a server.</p>
 </main>
 
 <script>
@@ -196,6 +239,77 @@ function resetEditor(){
  extraFilter='none';
  resetValues();
  render();
+}
+
+function resetCropFields(){
+ document.getElementById('cropX').value=0;
+ document.getElementById('cropY').value=0;
+ document.getElementById('cropW').value=100;
+ document.getElementById('cropH').value=100;
+}
+
+function applyCanvasAsImage(sourceCanvas,successMessage){
+ const img=new Image();
+ img.onload=()=>{
+  originalImage=img;
+  rotation=0;
+  flipped=false;
+  extraFilter='none';
+  resetValues();
+  message.textContent=successMessage;
+  render();
+ };
+ img.onerror=()=>{message.textContent='Could not process this image.'};
+ img.src=sourceCanvas.toDataURL('image/png');
+}
+
+function cropPhoto(){
+ if(!originalImage){message.textContent='Upload a photo first.';return;}
+ const x=Number(document.getElementById('cropX').value);
+ const y=Number(document.getElementById('cropY').value);
+ const w=Number(document.getElementById('cropW').value);
+ const h=Number(document.getElementById('cropH').value);
+
+ if(![x,y,w,h].every(Number.isFinite)||x<0||y<0||w<=0||h<=0||x+w>100||y+h>100){
+  message.textContent='Crop values must fit inside the image (0–100%).';
+  return;
+ }
+
+ const sx=Math.round(canvas.width*x/100);
+ const sy=Math.round(canvas.height*y/100);
+ const sw=Math.max(1,Math.round(canvas.width*w/100));
+ const sh=Math.max(1,Math.round(canvas.height*h/100));
+
+ const out=document.createElement('canvas');
+ out.width=sw;
+ out.height=sh;
+ out.getContext('2d').drawImage(canvas,sx,sy,sw,sh,0,0,sw,sh);
+
+ applyCanvasAsImage(out,'Crop applied successfully.');
+ resetCropFields();
+}
+
+function resizePhoto(){
+ if(!originalImage){message.textContent='Upload a photo first.';return;}
+ const w=Number(document.getElementById('resizeW').value);
+ const h=Number(document.getElementById('resizeH').value);
+
+ if(!Number.isInteger(w)||!Number.isInteger(h)||w<1||h<1||w>12000||h>12000){
+  message.textContent='Enter width and height from 1 to 12000 pixels.';
+  return;
+ }
+
+ const out=document.createElement('canvas');
+ out.width=w;
+ out.height=h;
+ const outCtx=out.getContext('2d');
+ outCtx.imageSmoothingEnabled=true;
+ outCtx.imageSmoothingQuality='high';
+ outCtx.drawImage(canvas,0,0,w,h);
+
+ applyCanvasAsImage(out,'Resize applied: '+w+' × '+h+' px.');
+ document.getElementById('resizeW').value='';
+ document.getElementById('resizeH').value='';
 }
 
 function downloadPhoto(){
