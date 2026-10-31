@@ -385,5 +385,78 @@ $('zoomIn').onclick=()=>{zoom=Math.min(zoom+.1,2);canvas.style.transform=`scale(
 $('zoomOut').onclick=()=>{zoom=Math.max(.3,zoom-.1);canvas.style.transform=`scale(${zoom})`};
 $('clearSelection').onclick=()=>msg('Selection cleared');
 
-document.querySelectorAll('[data-tool]').forEach(el=>el.onclick=()=>{
- tool=el.dataset.tool;s
+
+document.querySelectorAll('[data-tool]').forEach(el=>{
+  el.onclick=()=>{
+    tool=el.dataset.tool;
+    render();
+    msg(tool.toUpperCase()+' tool selected');
+  };
+});
+
+function download(){
+  if(!photo)return msg('Upload a photo first');
+  const format=$('format')?.value||'png';
+  const quality=Number($('quality')?.value||92)/100;
+  const mime=format==='jpeg'?'image/jpeg':format==='webp'?'image/webp':'image/png';
+  const link=document.createElement('a');
+  link.download='editora-photo.'+(format==='jpeg'?'jpg':format);
+  link.href=canvas.toDataURL(mime,quality);
+  link.click();
+  msg('Photo exported successfully');
+}
+
+$('export').onclick=()=>{
+  tool='export';
+  render();
+};
+
+$('saveProject').onclick=()=>{
+  if(!photo)return msg('Upload a photo first');
+  try{
+    const project={
+      image:canvas.toDataURL('image/png'),
+      settings:S
+    };
+    localStorage.setItem('editoraProject',JSON.stringify(project));
+    msg('Project saved on this device');
+  }catch(e){
+    msg('Project could not be saved. Image may be too large.');
+  }
+};
+
+$('openProject').onclick=()=>{
+  const saved=localStorage.getItem('editoraProject');
+  if(!saved)return msg('No saved project found');
+  try{
+    const project=JSON.parse(saved);
+    loadImage(project.image);
+    const restoreSettings=()=>{
+      if(!photo)return;
+      S=project.settings;
+      draw();
+      render();
+      msg('Project opened successfully');
+    };
+    const im=new Image();
+    im.onload=()=>{
+      photo=im;
+      original=im;
+      canvas.width=im.naturalWidth;
+      canvas.height=im.naturalHeight;
+      $('empty').hidden=true;
+      canvas.hidden=false;
+      restoreSettings();
+    };
+    im.src=project.image;
+  }catch(e){
+    msg('Could not open saved project');
+  }
+};
+
+render();
+})();
+</script>
+</body>
+</html>
+
