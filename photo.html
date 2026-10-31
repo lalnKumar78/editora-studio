@@ -1,136 +1,567 @@
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#101020">
-<title>Photo Studio | Editora Studio</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#10131c">
+<title>Editora Studio Photo Editor</title>
 <style>
-:root{--bg:#0c0d18;--panel:#17192a;--panel2:#20233a;--line:#30344f;--text:#f5f5ff;--muted:#a7abc3;--accent:#9b7cff;--accent2:#6f55e8}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 Inter,system-ui,Arial,sans-serif}
-header{height:66px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;background:#121425;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
-.logo{font-weight:800;letter-spacing:.5px;color:#c7b8ff}.logo span{color:white}a{color:#c7b8ff;text-decoration:none}
-main{max-width:1400px;margin:auto;padding:22px}.intro{display:flex;justify-content:space-between;gap:15px;align-items:end;margin-bottom:18px}.intro h1{margin:0;font-size:28px}.muted{color:var(--muted)}
-.top-actions,.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
-button,.filebtn,select,input[type=color]{border:1px solid var(--line);border-radius:9px;background:var(--panel2);color:var(--text);padding:10px 13px;font:inherit;cursor:pointer}
-button:hover,.filebtn:hover{border-color:var(--accent)}button.primary,.filebtn.primary{background:var(--accent2);border-color:var(--accent2);color:white}
-button:disabled{opacity:.4;cursor:not-allowed}input,select,textarea{accent-color:var(--accent)}input[type=file]{display:none}
-.workspace{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:16px;align-items:start}
-.stage-panel,.editor-panel{background:var(--panel);border:1px solid var(--line);border-radius:15px;overflow:hidden}
-.stage-toolbar{padding:12px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
-.stage{min-height:530px;background:radial-gradient(#252741 1px,transparent 1px);background-size:18px 18px;display:flex;align-items:center;justify-content:center;padding:22px;overflow:auto}
-#canvas{display:none;max-width:100%;max-height:72vh;object-fit:contain;box-shadow:0 12px 40px #0008;background:#fff}
-.empty{text-align:center;color:var(--muted);max-width:360px}.empty .big{font-size:48px;margin-bottom:10px}
-.status{padding:10px 14px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);min-height:40px}
-.tabs{display:flex;overflow:auto;border-bottom:1px solid var(--line);gap:2px;padding:7px}
-.tab{white-space:nowrap;padding:9px 11px;border:0;background:transparent;color:var(--muted)}.tab.active{background:#30294c;color:white}
-.tool-content{padding:15px;max-height:720px;overflow:auto}.tool-content h3{margin:0 0 12px;font-size:16px}
-.section{padding:13px 0;border-bottom:1px solid var(--line)}.section:last-child{border:0}
-.field{margin:12px 0}.field label{display:flex;justify-content:space-between;gap:8px;color:#d9daeb;font-size:13px;margin-bottom:7px}
-input[type=range]{width:100%}input[type=text],input[type=number],textarea,select{width:100%;background:#101222;border:1px solid var(--line);padding:10px;border-radius:8px;color:white}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.preset-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.preset{padding:9px 5px;font-size:12px;min-height:52px}.preset.active{border-color:#b39cff;background:#39305b}
-small{color:var(--muted)}.hint{font-size:12px;color:var(--muted);margin-top:7px}
-.badge{font-size:11px;border:1px solid #514777;border-radius:20px;padding:3px 7px;color:#d3c7ff}
-#cropBox{display:none}.divider{height:1px;background:var(--line);margin:12px 0}
-@media(max-width:900px){.workspace{grid-template-columns:1fr}.stage{min-height:360px}.tool-content{max-height:none}.intro{align-items:start;flex-direction:column}}
-@media(max-width:520px){main{padding:12px}.intro h1{font-size:23px}.stage{min-height:270px;padding:10px}header{padding:0 13px}.preset-grid{grid-template-columns:repeat(2,1fr)}}
+:root{--bg:#0b0e16;--p:#151b29;--p2:#20283a;--line:#30394d;--txt:#f4f6fb;--muted:#aab4c6;--a:#8b7cff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font:15px system-ui,Arial}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.top{height:60px;background:#111725;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:sticky;top:0;z-index:5}
+.brand{font-weight:900;font-size:18px}
+.brand b{color:var(--a)}
+.btn{border:1px solid var(--line);background:var(--p2);color:var(--txt);border-radius:10px;padding:9px 12px;font-weight:650}
+.primary{background:var(--a);border-color:var(--a)}
+button:disabled{opacity:.4;cursor:not-allowed}
+.work{max-width:1450px;margin:auto;padding:14px;display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:14px;align-items:start}
+.stage{height:min(66vh,690px);min-height:350px;position:sticky;top:74px;background:#070910;border:1px solid var(--line);border-radius:15px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.stage canvas{max-width:100%;max-height:100%}
+.empty{text-align:center;color:var(--muted);padding:25px}
+.empty h2{color:white}
+.utils{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.panel{background:var(--p);border:1px solid var(--line);border-radius:15px;overflow:hidden}
+.head{padding:14px;border-bottom:1px solid var(--line)}
+.head h2{margin:0;font-size:17px}
+.head p,.muted{color:var(--muted);font-size:12px;margin:4px 0}
+.cats{display:flex;gap:7px;padding:10px;overflow:auto;border-bottom:1px solid var(--line)}
+.cat{white-space:nowrap;background:#101624;color:#cbd3e1;border:1px solid var(--line);border-radius:9px;padding:8px 11px;font-size:12px}
+.cat.active{background:#332d5b;border-color:var(--a);color:white}
+.tools{padding:14px;max-height:calc(100vh - 195px);overflow:auto}
+.group{font-weight:800;font-size:13px;margin:4px 0 12px}
+.control{margin:0 0 15px}
+.ch{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}
+.ch output{color:#65dec7}
+input[type=range]{width:100%;accent-color:var(--a)}
+input[type=text],input[type=number],select{width:100%;background:#0e1421;color:white;border:1px solid var(--line);border-radius:8px;padding:9px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tile{background:#101624;color:white;border:1px solid var(--line);border-radius:9px;padding:7px;min-width:0}
+.tile.active{border:2px solid var(--a);padding:6px}
+.tile canvas{width:100%;aspect-ratio:1.35;display:block;border-radius:6px;background:#333}
+.tile span{font-size:11px;display:block;margin-top:5px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.note{background:#101a29;border:1px solid #2b3a50;padding:10px;border-radius:9px;color:#c4cede;font-size:12px;margin:10px 0}
+.line{height:1px;background:var(--line);margin:15px 0}
+.hidden{display:none!important}
+#file{display:none}
+@media(max-width:900px){
+.work{display:flex;flex-direction:column;padding:9px}
+.stage{width:100%;height:37vh;min-height:220px;max-height:430px;top:66px;z-index:2}
+.panel{width:100%;overflow:visible}
+.tools{max-height:none;overflow:visible}
+.top{height:56px;padding:0 10px}
+.btn{padding:8px 10px;font-size:12px}
+}
 </style>
 </head>
 <body>
-<header><div class="logo">✦ EDITORA <span>STUDIO</span></div><a href="index.html">← Home</a></header>
-<main>
- <div class="intro"><div><h1>Photo Studio</h1><div class="muted">A complete browser-based photo editor</div></div>
- <div class="top-actions"><label class="filebtn primary" for="upload">＋ Upload photo</label><input id="upload" type="file" accept="image/*"><button id="undo">↶ Undo</button><button id="redo">↷ Redo</button><button id="reset">Reset</button><button class="primary" id="download">Download</button></div></div>
- <div class="workspace">
-  <section class="stage-panel">
-   <div class="stage-toolbar"><div class="row"><button id="before">Hold: Before</button><button id="zoomOut">−</button><span id="zoomLabel" class="muted">100%</span><button id="zoomIn">＋</button><button id="fit">Fit</button></div><div class="row"><select id="format"><option value="image/png">PNG</option><option value="image/jpeg">JPG</option><option value="image/webp">WebP</option></select><select id="quality"><option value="0.92">High quality</option><option value="0.8">Smaller file</option><option value="1">Maximum</option></select></div></div>
-   <div class="stage"><div class="empty" id="empty"><div class="big">🖼️</div><b>Start editing your photo</b><p>Upload an image to use filters, effects, text, frames, crop and more.</p><label class="filebtn primary" for="upload">Choose photo</label></div><canvas id="canvas"></canvas></div>
-   <div class="status" id="status">Ready. Your photo stays in this browser; it is not uploaded by this editor.</div>
-  </section>
-  <aside class="editor-panel">
-   <nav class="tabs">
-    <button class="tab active" data-tab="adjust">Adjust</button><button class="tab" data-tab="filters">Filters</button><button class="tab" data-tab="effects">Effects</button><button class="tab" data-tab="text">Text</button><button class="tab" data-tab="crop">Crop</button><button class="tab" data-tab="frames">Frames</button><button class="tab" data-tab="ai">AI tools</button>
-   </nav>
-   <div class="tool-content" id="tools">
-    <div class="pane" data-pane="adjust">
-     <h3>Light & colour</h3>
-     <div id="adjustments"></div>
-     <div class="section"><h3>Transform</h3><div class="grid2"><button id="rotateL">↶ Rotate left</button><button id="rotateR">↷ Rotate right</button><button id="flipH">↔ Flip horizontal</button><button id="flipV">↕ Flip vertical</button></div></div>
-     <div class="section"><button id="resetAdjust">Reset adjustments</button></div>
-    </div>
-    <div class="pane" data-pane="filters" hidden><h3>Filter styles <span class="badge">30 presets</span></h3><p class="hint">Choose a look; adjust intensity below.</p><div class="preset-grid" id="filterGrid"></div><div class="field"><label>Filter intensity <output id="filterIntensityOut">100%</output></label><input id="filterIntensity" type="range" min="0" max="100" value="100"></div></div>
-    <div class="pane" data-pane="effects" hidden><h3>Creative effects</h3><div class="preset-grid" id="effectGrid"></div><div class="field"><label>Effect strength <output id="effectStrengthOut">50%</output></label><input id="effectStrength" type="range" min="0" max="100" value="50"></div><div class="hint">Effects are rendered locally on the photo.</div></div>
-    <div class="pane" data-pane="text" hidden><h3>Text & captions</h3><div class="field"><label>Caption text</label><textarea id="caption" rows="3" placeholder="Write your caption here"></textarea></div><div class="grid2"><div class="field"><label>Font size</label><input id="fontSize" type="number" min="8" max="240" value="48"></div><div class="field"><label>Font</label><select id="font"><option>Arial</option><option>Georgia</option><option>Impact</option><option>Verdana</option><option>Courier New</option><option>Times New Roman</option></select></div><div class="field"><label>Text colour</label><input id="textColor" type="color" value="#ffffff"></div><div class="field"><label>Outline</label><input id="outlineColor" type="color" value="#111111"></div></div><div class="field"><label>Position</label><select id="textPosition"><option value="bottom">Bottom centre</option><option value="top">Top centre</option><option value="center">Middle centre</option><option value="left">Left centre</option><option value="right">Right centre</option></select></div><div class="field"><label>Caption style</label><select id="captionStyle"><option value="shadow">Shadow</option><option value="outline">Outlined</option><option value="box">Solid label</option><option value="plain">Clean</option></select></div><div class="row"><button class="primary" id="addText">Apply text</button><button id="clearText">Remove text</button></div><div class="section"><h3>Quick caption styles</h3><div class="preset-grid" id="captionPresets"></div></div></div>
-    <div class="pane" data-pane="crop" hidden><h3>Crop & resize</h3><div class="field"><label>Aspect ratio</label><select id="aspect"><option value="free">Free crop</option><option value="1:1">Square 1:1</option><option value="4:5">Portrait 4:5</option><option value="3:4">Portrait 3:4</option><option value="9:16">Story 9:16</option><option value="16:9">Landscape 16:9</option><option value="4:3">Landscape 4:3</option></select></div><div class="grid2"><div class="field"><label>Width (px)</label><input id="cropW" type="number" min="1" placeholder="Width"></div><div class="field"><label>Height (px)</label><input id="cropH" type="number" min="1" placeholder="Height"></div></div><div class="row"><button class="primary" id="applyCrop">Apply centre crop</button><button id="resetCrop">Reset crop</button></div><div class="divider"></div><h3>Resize image</h3><div class="grid2"><div class="field"><label>Width</label><input id="resizeW" type="number" min="1" max="12000" placeholder="px"></div><div class="field"><label>Height</label><input id="resizeH" type="number" min="1" max="12000" placeholder="px"></div></div><label><input type="checkbox" id="keepRatio" checked> Keep proportions</label><div class="row" style="margin-top:12px"><button class="primary" id="applyResize">Resize</button></div></div>
-    <div class="pane" data-pane="frames" hidden><h3>Frames, borders & stickers</h3><div class="preset-grid" id="frameGrid"></div><div class="field"><label>Border thickness <output id="borderOut">18 px</output></label><input id="borderSize" type="range" min="0" max="100" value="18"></div><div class="field"><label>Border colour</label><input id="borderColor" type="color" value="#ffffff"></div><div class="field"><label>Sticker / emoji</label><select id="sticker"><option value="">None</option><option>✨</option><option>❤️</option><option>⭐</option><option>🌸</option><option>🔥</option><option>🌈</option><option>🦋</option><option>🌿</option><option>👑</option><option>💫</option></select></div><div class="field"><label>Sticker size <output id="stickerOut">64 px</output></label><input id="stickerSize" type="range" min="20" max="180" value="64"></div><button class="primary" id="applyFrame">Apply frame & sticker</button></div>
-    <div class="pane" data-pane="ai" hidden><h3>AI photo tools</h3><div class="section"><b>AI Enhance</b><p class="hint">AI upscaling and intelligent restoration need an external AI service.</p><button disabled>AI Enhance — service needed</button></div><div class="section"><b>Background remover / changer</b><p class="hint">Requires a connected background-removal model or API.</p><button disabled>Background removal — service needed</button></div><div class="section"><b>Object removal</b><p class="hint">Requires an AI inpainting service.</p><button disabled>Object removal — service needed</button></div><div class="section"><b>AI image generation & style transfer</b><p class="hint">Connect an image-generation API to enable these features. This editor does not pretend these AI actions are working yet.</p><button disabled>AI generation — service needed</button></div></div>
-   </div>
-  </aside>
- </div>
+<header class="top">
+<div class="brand">EDITORA <b>STUDIO</b></div>
+<div>
+<button class="btn" id="open">＋ Add photo</button>
+<button class="btn primary" id="save">Download</button>
+</div>
+</header>
+
+<input id="file" type="file" accept="image/*">
+
+<main class="work">
+<section>
+<div class="stage" id="stage">
+<div class="empty" id="empty">
+<div style="font-size:42px">▧</div>
+<h2>Your canvas starts here</h2>
+<p>Select a photo to begin editing.</p>
+<button class="btn primary" id="choose">Choose photo</button>
+</div>
+<canvas id="cv" class="hidden"></canvas>
+</div>
+
+<div class="utils">
+<button class="btn" id="undo" disabled>↶ Undo</button>
+<button class="btn" id="redo" disabled>↷ Redo</button>
+<button class="btn" id="before" disabled>Before</button>
+<button class="btn" id="reset" disabled>Reset</button>
+<button class="btn" id="rotate" disabled>↻ Rotate</button>
+<button class="btn" id="flip" disabled>⇋ Flip</button>
+</div>
+</section>
+
+<section class="panel">
+<div class="head">
+<h2>Photo Editor</h2>
+<p>Live editing · Changes appear on your photo instantly</p>
+</div>
+
+<nav class="cats">
+<button class="cat active" data-tab="adjust">Adjust</button>
+<button class="cat" data-tab="filters">Filters</button>
+<button class="cat" data-tab="effects">Effects</button>
+<button class="cat" data-tab="crop">Crop & Size</button>
+<button class="cat" data-tab="text">Text</button>
+<button class="cat" data-tab="stickers">Stickers</button>
+<button class="cat" data-tab="frames">Frames</button>
+<button class="cat" data-tab="color">Color</button>
+<button class="cat" data-tab="ai">AI tools</button>
+</nav>
+
+<div class="tools" id="tools"></div>
+</section>
 </main>
+
 <script>
-const $=id=>document.getElementById(id), canvas=$('canvas'),ctx=canvas.getContext('2d');
-let source=null,base=null,zoom=1,rotation=0,flipX=1,flipY=1,filter='Original',effect='None',textLayer=null,frame='None',history=[],future=[],showBefore=false;
-const defaults={brightness:100,contrast:100,saturation:100,warmth:0,hue:0,blur:0,fade:0,vignette:0,grain:0};
-let vals={...defaults},filterIntensity=100,effectStrength=50,borderSize=18,borderColor='#ffffff',sticker='',stickerSize=64;
-const filterDefs=[
-['Original','none'],['Vivid','saturate(1.65) contrast(1.08)'],['Vintage','sepia(.48) contrast(.92)'],['Retro','sepia(.25) saturate(1.3)'],['Cinematic','contrast(1.25) saturate(.82)'],['Noir','grayscale(1) contrast(1.35)'],['Mono','grayscale(1)'],['Warm','sepia(.22) saturate(1.2)'],['Cool','hue-rotate(18deg) saturate(.9)'],['Golden','sepia(.35) saturate(1.35)'],['Faded','contrast(.82) brightness(1.08)'],['Matte','contrast(.88) saturate(.82)'],['Dramatic','contrast(1.5) saturate(1.1)'],['Soft','brightness(1.08) contrast(.88)'],['Bright','brightness(1.18) saturate(1.15)'],['Moody','brightness(.85) contrast(1.2) saturate(.8)'],['Pastel','saturate(.75) brightness(1.1)'],['Arctic','hue-rotate(190deg) saturate(.65)'],['Rose','sepia(.18) hue-rotate(315deg)'],['Emerald','hue-rotate(75deg) saturate(1.25)'],['Lavender','hue-rotate(250deg) saturate(.8)'],['Sunset','sepia(.3) hue-rotate(335deg)'],['Ocean','hue-rotate(170deg) saturate(1.2)'],['Forest','hue-rotate(65deg) saturate(1.15)'],['Polaroid','sepia(.2) contrast(.9) brightness(1.08)'],['Cyber','hue-rotate(285deg) saturate(1.7)'],['Urban','grayscale(.55) contrast(1.3)'],['Clean','contrast(1.08) saturate(1.08)'],['Dream','blur(.3px) brightness(1.12) saturate(1.15)'],['B&W Soft','grayscale(1) contrast(.85)']];
-const effects=['None','Soft glow','Dream blur','Vintage grain','Vignette','Fade','High contrast','Duotone blue','Duotone rose','Neon mood','Film look','Soft focus'];
-function status(s){$('status').textContent=s}
-function loaded(){return !!source}
-function snapshot(){if(!loaded())return;history.push(JSON.stringify({vals,filter,filterIntensity,effect,effectStrength,rotation,flipX,flipY,textLayer,frame,borderSize,borderColor,sticker,stickerSize}));if(history.length>35)history.shift();future=[];buttons()}
-function buttons(){$('undo').disabled=!history.length;$('redo').disabled=!future.length}
-function state(){return {vals:{...vals},filter,filterIntensity,effect,effectStrength,rotation,flipX,flipY,textLayer:textLayer?{...textLayer}:null,frame,borderSize,borderColor,sticker,stickerSize}}
-function restore(s){Object.assign(vals,s.vals);filter=s.filter;filterIntensity=s.filterIntensity;effect=s.effect;effectStrength=s.effectStrength;rotation=s.rotation;flipX=s.flipX;flipY=s.flipY;textLayer=s.textLayer;frame=s.frame;borderSize=s.borderSize;borderColor=s.borderColor;sticker=s.sticker;stickerSize=s.stickerSize;syncUI();render()}
-function syncUI(){for(const k in vals){const el=$(k);if(el){el.value=vals[k];$(k+'Out').textContent=vals[k]+(k==='warmth'||k==='hue'?'':'%')}}$('filterIntensity').value=filterIntensity;$('filterIntensityOut').textContent=filterIntensity+'%';$('effectStrength').value=effectStrength;$('effectStrengthOut').textContent=effectStrength+'%';$('borderSize').value=borderSize;$('borderOut').textContent=borderSize+' px';$('borderColor').value=borderColor;$('sticker').value=sticker;$('stickerSize').value=stickerSize;$('stickerOut').textContent=stickerSize+' px';}
-function setTab(tab){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));document.querySelectorAll('.pane').forEach(p=>p.hidden=p.dataset.pane!==tab)}
-document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
-function loadImage(file){if(!file||!file.type.startsWith('image/'))return status('Please select a valid image.');const reader=new FileReader();reader.onload=e=>{const im=new Image();im.onload=()=>{source=im;base=document.createElement('canvas');base.width=im.naturalWidth;base.height=im.naturalHeight;base.getContext('2d').drawImage(im,0,0);canvas.style.display='block';$('empty').style.display='none';rotation=0;flipX=flipY=1;vals={...defaults};filter='Original';effect='None';textLayer=null;frame='None';history=[];future=[];zoom=1;render();buttons();status(`Loaded ${file.name} · ${im.naturalWidth} × ${im.naturalHeight}px`)};im.src=e.target.result};reader.readAsDataURL(file)}
-$('upload').addEventListener('change',e=>loadImage(e.target.files[0]));
-function currentFilter(){let def=filterDefs.find(x=>x[0]===filter)?.[1]||'none';if(def==='none'||filterIntensity===0)return 'none';return def}
-function render(){if(!loaded())return;const swap=Math.abs(rotation)%180===90;const w=swap?base.height:base.width,h=swap?base.width:base.height;canvas.width=w;canvas.height=h;ctx.save();ctx.translate(w/2,h/2);ctx.rotate(rotation*Math.PI/180);ctx.scale(flipX,flipY);
-let f=`brightness(${vals.brightness}%) contrast(${vals.contrast}%) saturate(${vals.saturation}%) sepia(${Math.max(0,vals.warmth)/100}) hue-rotate(${vals.hue}deg) blur(${vals.blur/10}px)`;let ff=currentFilter();if(ff!=='none'&&filterIntensity>0)f+=' '+ff;ctx.filter=f;ctx.drawImage(base,-base.width/2,-base.height/2);ctx.restore();ctx.filter='none';
-if(vals.fade>0){ctx.fillStyle=`rgba(245,235,220,${vals.fade/300})`;ctx.fillRect(0,0,w,h)}
-if(effect!=='None'){const a=effectStrength/100; if(effect==='Vignette'||vals.vignette>0){let g=ctx.createRadialGradient(w/2,h/2,Math.min(w,h)*.15,w/2,h/2,Math.max(w,h)*.72);g.addColorStop(0,'transparent');g.addColorStop(1,`rgba(0,0,0,${a*.75})`);ctx.fillStyle=g;ctx.fillRect(0,0,w,h)}
-if(effect==='Soft glow'||effect==='Dream blur'||effect==='Soft focus'){ctx.save();ctx.globalAlpha=a*.2;ctx.filter=`blur(${2+a*7}px)`;ctx.drawImage(canvas,0,0);ctx.restore()}
-if(effect==='Fade'||effect==='Film look'){ctx.fillStyle=`rgba(240,220,180,${a*.16})`;ctx.fillRect(0,0,w,h)}
-if(effect==='Duotone blue'||effect==='Duotone rose'){ctx.fillStyle=effect==='Duotone blue'?`rgba(25,85,180,${a*.3})`:`rgba(190,55,105,${a*.25})`;ctx.fillRect(0,0,w,h)}
-if(effect==='Neon mood'){ctx.fillStyle=`rgba(40,100,255,${a*.12})`;ctx.fillRect(0,0,w,h)}
-if(effect==='Vintage grain'||vals.grain>0){let n=Math.min(2500,Math.round(w*h/1800*a));for(let i=0;i<n;i++){let x=Math.random()*w,y=Math.random()*h;ctx.fillStyle=Math.random()>.5?`rgba(255,255,255,${Math.random()*.25})`:`rgba(0,0,0,${Math.random()*.25})`;ctx.fillRect(x,y,1.3,1.3)}}}
-if(vals.vignette>0&&effect!=='Vignette'){let g=ctx.createRadialGradient(w/2,h/2,Math.min(w,h)*.15,w/2,h/2,Math.max(w,h)*.7);g.addColorStop(0,'transparent');g.addColorStop(1,`rgba(0,0,0,${vals.vignette/150})`);ctx.fillStyle=g;ctx.fillRect(0,0,w,h)}
-drawFrame(w,h);drawText(w,h);drawSticker(w,h);canvas.style.transform=`scale(${zoom})`;canvas.style.transformOrigin='center center';$('zoomLabel').textContent=Math.round(zoom*100)+'%'}
-function drawFrame(w,h){if(frame==='None'&&borderSize===0)return;let b=borderSize;if(frame==='Polaroid')b=Math.max(b,Math.round(Math.min(w,h)*.06));if(frame==='Rounded'){}if(b>0){ctx.save();ctx.strokeStyle=borderColor;ctx.lineWidth=b;ctx.strokeRect(b/2,b/2,w-b,h-b);ctx.restore()}if(frame==='Double'){ctx.save();ctx.strokeStyle=borderColor;ctx.lineWidth=Math.max(2,b/5);ctx.strokeRect(b,b,w-2*b,h-2*b);ctx.restore()}if(frame==='Film'){ctx.save();ctx.fillStyle=borderColor;let s=Math.max(7,b/2);for(let y=s;y<h-s;y+=s*2){ctx.fillRect(2,y,s,s);ctx.fillRect(w-s-2,y,s,s)}ctx.restore()}if(frame==='Polaroid'){ctx.fillStyle=borderColor;ctx.fillRect(0,h-b*.65,w,b*.65)}}
-function drawText(w,h){if(!textLayer||!textLayer.text)return;const t=textLayer;ctx.save();ctx.font=`bold ${t.size}px ${t.font}`;ctx.textAlign='center';ctx.textBaseline='middle';let x=w/2,y=h*.9;if(t.pos==='top')y=h*.1;if(t.pos==='center')y=h/2;if(t.pos==='left'){x=w*.18;y=h/2}if(t.pos==='right'){x=w*.82;y=h/2}const lines=t.text.split('\n'),lh=t.size*1.2;let yy=y-(lines.length-1)*lh/2;lines.forEach(line=>{let width=ctx.measureText(line).width;if(t.style==='box'){ctx.fillStyle='rgba(0,0,0,.58)';ctx.fillRect(x-width/2-14,yy-lh/2,width+28,lh)}if(t.style==='outline'||t.style==='shadow'){ctx.lineWidth=Math.max(2,t.size/13);ctx.strokeStyle=t.outline;ctx.strokeText(line,x,yy)}if(t.style==='shadow'){ctx.shadowColor='#000';ctx.shadowBlur=9;ctx.shadowOffsetY=3}ctx.fillStyle=t.color;ctx.fillText(line,x,yy);ctx.shadowColor='transparent';yy+=lh});ctx.restore()}
-function drawSticker(w,h){if(!sticker)return;ctx.save();ctx.font=`${stickerSize}px system-ui`;ctx.textAlign='right';ctx.textBaseline='top';ctx.fillText(sticker,w-18,18);ctx.restore()}
-function change(fn){if(!loaded())return status('Upload a photo first.');snapshot();fn();render()}
-const adjustDefs=[['brightness','Brightness',0,200,1],['contrast','Contrast',0,200,1],['saturation','Saturation',0,200,1],['warmth','Warmth',-100,100,1],['hue','Hue',-180,180,1],['blur','Blur',0,100,1],['fade','Fade',0,100,1],['vignette','Vignette',0,100,1],['grain','Grain',0,100,1]];
-adjustDefs.forEach(([id,label,min,max,step])=>{let d=document.createElement('div');d.className='field';d.innerHTML=`<label>${label}<output id="${id}Out">${vals[id]}</output></label><input id="${id}" type="range" min="${min}" max="${max}" step="${step}" value="${vals[id]}">`;$('adjustments').appendChild(d);$(id).oninput=()=>{vals[id]=+$(id).value;$(id+'Out').textContent=vals[id];render()};$(id).onchange=()=>snapshot()});
-filterDefs.forEach(([name])=>{let b=document.createElement('button');b.className='preset';b.textContent=name;b.onclick=()=>change(()=>{filter=name;document.querySelectorAll('#filterGrid button').forEach(x=>x.classList.toggle('active',x===b))});$('filterGrid').appendChild(b)});
-effects.forEach(name=>{let b=document.createElement('button');b.className='preset';b.textContent=name;b.onclick=()=>change(()=>{effect=name;document.querySelectorAll('#effectGrid button').forEach(x=>x.classList.toggle('active',x===b))});$('effectGrid').appendChild(b)});
-['None','Classic','White','Black','Double','Film','Polaroid','Rounded','Neon'].forEach(name=>{let b=document.createElement('button');b.className='preset';b.textContent=name;b.onclick=()=>change(()=>{frame=name;if(name==='White')borderColor='#ffffff';if(name==='Black')borderColor='#111111';if(name==='Neon')borderColor='#9b7cff';$('borderColor').value=borderColor});$('frameGrid').appendChild(b)});
-[['Minimal','plain'],['Bold','outline'],['Cinematic','shadow'],['Meme','box']].forEach(([n,v])=>{let b=document.createElement('button');b.className='preset';b.textContent=n;b.onclick=()=>{$('captionStyle').value=v};$('captionPresets').appendChild(b)});
-$('filterIntensity').oninput=()=>{filterIntensity=+$('filterIntensity').value;$('filterIntensityOut').textContent=filterIntensity+'%';render()};$('filterIntensity').onchange=()=>snapshot();
-$('effectStrength').oninput=()=>{effectStrength=+$('effectStrength').value;$('effectStrengthOut').textContent=effectStrength+'%';render()};$('effectStrength').onchange=()=>snapshot();
-['brightness','contrast','saturation','warmth','hue','blur','fade','vignette','grain'].forEach(id=>{if($(id))$(id).addEventListener('change',()=>snapshot())});
-$('rotateL').onclick=()=>change(()=>rotation=(rotation-90+360)%360);$('rotateR').onclick=()=>change(()=>rotation=(rotation+90)%360);$('flipH').onclick=()=>change(()=>flipX*=-1);$('flipV').onclick=()=>change(()=>flipY*=-1);
-$('resetAdjust').onclick=()=>change(()=>{vals={...defaults};filter='Original';effect='None';syncUI()});
-$('addText').onclick=()=>change(()=>{let text=$('caption').value.trim();if(!text)return status('Write a caption first.');textLayer={text,size:Math.max(8,Math.min(240,+$('fontSize').value||48)),font:$('font').value,color:$('textColor').value,outline:$('outlineColor').value,pos:$('textPosition').value,style:$('captionStyle').value}});
-$('clearText').onclick=()=>change(()=>textLayer=null);
-$('applyFrame').onclick=()=>change(()=>{frame=frame==='None'?'Classic':frame;borderSize=+$('borderSize').value;borderColor=$('borderColor').value;sticker=$('sticker').value;stickerSize=+$('stickerSize').value});
-$('borderSize').oninput=()=>{$('borderOut').textContent=$('borderSize').value+' px'};$('stickerSize').oninput=()=>{$('stickerOut').textContent=$('stickerSize').value+' px'};
-$('aspect').onchange=()=>{let [a,b]=($('aspect').value==='free'?'0:0':$('aspect').value).split(':').map(Number);if(a){$('cropW').value=Math.round(base?.width||1000);$('cropH').value=Math.round((base?.width||1000)*b/a)}};
-$('applyCrop').onclick=()=>change(()=>{let w=+$('cropW').value||canvas.width,h=+$('cropH').value||canvas.height;w=Math.min(w,canvas.width);h=Math.min(h,canvas.height);let ratio=w/h,ar=$('aspect').value;if(ar!=='free'){let [a,b]=ar.split(':').map(Number);ratio=a/b;if(canvas.width/canvas.height>ratio)w=canvas.height*ratio;else h=canvas.width/ratio}let x=(canvas.width-w)/2,y=(canvas.height-h)/2;let out=document.createElement('canvas');out.width=Math.round(w);out.height=Math.round(h);out.getContext('2d').drawImage(canvas,x,y,w,h,0,0,out.width,out.height);replaceBase(out);status('Centre crop applied.')});
-$('resetCrop').onclick=()=>{$('cropW').value='';$('cropH').value='';$('aspect').value='free'};
-function replaceBase(c){let im=new Image();im.onload=()=>{base=c;source=im;rotation=0;flipX=flipY=1;vals={...defaults};filter='Original';effect='None';textLayer=null;frame='None';render()};im.src=c.toDataURL('image/png')}
-$('keepRatio').onchange=()=>{};$('resizeW').oninput=()=>{if($('keepRatio').checked&&base&&$('resizeW').value)$('resizeH').value=Math.round(+$('resizeW').value*base.height/base.width)};$('resizeH').oninput=()=>{if($('keepRatio').checked&&base&&$('resizeH').value)$('resizeW').value=Math.round(+$('resizeH').value*base.width/base.height)};
-$('applyResize').onclick=()=>change(()=>{let w=+$('resizeW').value,h=+$('resizeH').value;if(!w||!h||w>12000||h>12000)return status('Enter valid dimensions up to 12000 px.');let c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(canvas,0,0,w,h);replaceBase(c);status(`Resized to ${w} × ${h}px`)});
-$('undo').onclick=()=>{if(!history.length)return;future.push(JSON.stringify(state()));restore(JSON.parse(history.pop()));buttons()};$('redo').onclick=()=>{if(!future.length)return;history.push(JSON.stringify(state()));restore(JSON.parse(future.pop()));buttons()};
-$('reset').onclick=()=>{if(!loaded())return;change(()=>{rotation=0;flipX=flipY=1;vals={...defaults};filter='Original';effect='None';textLayer=null;frame='None';borderSize=18;sticker='';syncUI()});status('Editor settings reset. Original upload is preserved.')};
-$('before').onpointerdown=()=>{if(!loaded())return;showBefore=true;ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(base,0,0,canvas.width,canvas.height)};$('before').onpointerup=$('before').onpointerleave=()=>{if(showBefore){showBefore=false;render()}};
-$('zoomIn').onclick=()=>{zoom=Math.min(2.5,zoom+.1);render()};$('zoomOut').onclick=()=>{zoom=Math.max(.3,zoom-.1);render()};$('fit').onclick=()=>{zoom=1;render()};
-$('download').onclick=()=>{if(!loaded())return status('Upload a photo first.');let type=$('format').value,q=+$('quality').value;canvas.toBlob(blob=>{if(!blob)return status('Export failed.');let url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='editora-edited-photo.'+(type==='image/jpeg'?'jpg':type==='image/webp'?'webp':'png');a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);status('Export complete. Your edited photo has been downloaded.')},type,q)};
-buttons();setTab('adjust');
+const $=s=>document.querySelector(s),
+cv=$('#cv'),
+cx=cv.getContext('2d'),
+file=$('#file');
+
+let photo=null,ow=0,oh=0,tab='adjust',hist=[],redoStack=[],showingBefore=false;
+
+const defaults=()=>({
+brightness:100,contrast:100,saturation:100,
+warmth:0,hue:0,blur:0,fade:0,vignette:0,grain:0,
+filter:'Original',frame:'None',rotation:0,flip:false,
+texts:[],stickers:[]
+});
+
+let S=defaults();
+
+function snap(){return JSON.stringify(S)}
+
+function push(){
+if(!photo)return;
+hist.push(snap());
+if(hist.length>35)hist.shift();
+redoStack=[];
+buttons();
+}
+
+function buttons(){
+['undo','redo','before','reset','rotate','flip','save'].forEach(id=>{
+$('#'+id).disabled=!photo||
+((id==='undo')&&!hist.length)||
+((id==='redo')&&!redoStack.length);
+});
+}
+
+function load(f){
+if(!f||!f.type.startsWith('image/'))return;
+let u=URL.createObjectURL(f),im=new Image();
+im.onload=()=>{
+photo=im;
+ow=im.naturalWidth;
+oh=im.naturalHeight;
+S=defaults();
+hist=[];
+redoStack=[];
+$('#empty').classList.add('hidden');
+cv.classList.remove('hidden');
+draw();
+renderTools();
+buttons();
+URL.revokeObjectURL(u);
+};
+im.src=u;
+}
+
+$('#open').onclick=$('#choose').onclick=()=>file.click();
+file.onchange=e=>load(e.target.files[0]);
+
+function filterCss(){
+return ({
+'B&W':'grayscale(1)',
+'Sepia':'sepia(.9)',
+'Vintage':'sepia(.4) saturate(.8) contrast(1.08)',
+'Cool':'hue-rotate(12deg) saturate(1.1)',
+'Warm':'sepia(.2) saturate(1.2)',
+'Dramatic':'contrast(1.35) saturate(1.15)',
+'Fade':'contrast(.85) brightness(1.08) saturate(.8)',
+'Vivid':'saturate(1.6) contrast(1.08)',
+'Matte':'contrast(.88) saturate(.85) brightness(1.05)',
+'Dream':'brightness(1.1) saturate(1.15)'
+})[S.filter]||'';
+}
+
+function draw(){
+if(!photo)return;
+let r=((S.rotation%360)+360)%360;
+let w=(r===90||r===270)?oh:ow;
+let h=(r===90||r===270)?ow:oh;
+
+cv.width=w;
+cv.height=h;
+
+cx.save();
+cx.translate(w/2,h/2);
+cx.rotate(r*Math.PI/180);
+cx.scale(S.flip?-1:1,1);
+cx.filter=`brightness(${S.brightness}%) contrast(${S.contrast}%) saturate(${S.saturation}%) hue-rotate(${S.hue}deg) blur(${S.blur}px) ${filterCss()}`;
+cx.drawImage(photo,-ow/2,-oh/2);
+cx.restore();
+cx.filter='none';
+
+if(S.warmth){
+cx.globalAlpha=Math.abs(S.warmth)/180;
+cx.fillStyle=S.warmth>0?'#ff9b42':'#559cff';
+cx.fillRect(0,0,w,h);
+cx.globalAlpha=1;
+}
+
+if(S.fade){
+cx.globalAlpha=S.fade/200;
+cx.fillStyle='#f5e9cf';
+cx.fillRect(0,0,w,h);
+cx.globalAlpha=1;
+}
+
+if(S.vignette){
+let g=cx.createRadialGradient(w/2,h/2,Math.min(w,h)*.18,w/2,h/2,Math.max(w,h)*.7);
+g.addColorStop(0,'transparent');
+g.addColorStop(1,`rgba(0,0,0,${S.vignette/100})`);
+cx.fillStyle=g;
+cx.fillRect(0,0,w,h);
+}
+
+if(S.grain){
+cx.globalAlpha=S.grain/250;
+for(let i=0,n=Math.min(12000,w*h/100*S.grain/100);i<n;i++){
+cx.fillStyle=Math.random()>.5?'white':'black';
+cx.fillRect(Math.random()*w,Math.random()*h,1,1);
+}
+cx.globalAlpha=1;
+}
+
+if(S.frame!=='None'){
+cx.strokeStyle=({
+'White border':'white',
+'Black border':'#080808',
+'Gold':'#d6b46b',
+'Pink':'#f4c5d4'
+})[S.frame];
+cx.lineWidth=Math.max(8,Math.min(w,h)*.025);
+cx.strokeRect(4,4,w-8,h-8);
+}
+
+S.stickers.forEach(s=>{
+cx.font=`${s.size}px Arial`;
+cx.textAlign='center';
+cx.fillText(s.value,w/2+s.x,h/2+s.y);
+});
+
+S.texts.forEach(t=>{
+cx.save();
+cx.font=`bold ${t.size}px ${t.font}`;
+cx.textAlign='center';
+cx.lineWidth=Math.max(2,t.size/12);
+cx.strokeStyle=t.outline;
+cx.fillStyle=t.color;
+cx.strokeText(t.value,w/2+t.x,h/2+t.y);
+cx.fillText(t.value,w/2+t.x,h/2+t.y);
+cx.restore();
+});
+}
+
+function slider(label,key,min,max,step=1,suffix=''){
+return `<div class="control">
+<div class="ch"><label>${label}</label><output id="v-${key}">${S[key]}${suffix}</output></div>
+<input type="range" min="${min}" max="${max}" step="${step}" value="${S[key]}" data-key="${key}" data-suffix="${suffix}">
+</div>`;
+}
+
+function renderTools(){
+let t=$('#tools');
+if(!photo){
+t.innerHTML='<div class="note">Choose a photo first. Standard editing runs locally in your browser.</div>';
+return;
+}
+let h='';
+
+if(tab==='adjust')h=`
+<div class="group">Light & detail</div>
+${slider('Brightness','brightness',0,200,1,'%')}
+${slider('Contrast','contrast',0,200,1,'%')}
+${slider('Saturation','saturation',0,200,1,'%')}
+${slider('Blur','blur',0,12,.2,' px')}
+${slider('Fade','fade',0,100)}
+${slider('Vignette','vignette',0,100)}
+${slider('Grain','grain',0,100)}
+<div class="line"></div>
+<div class="group">Temperature & tone</div>
+${slider('Warm ↔ Cool','warmth',-100,100)}
+${slider('Hue','hue',-180,180,1,'°')}`;
+
+if(tab==='filters')h=`
+<div class="group">Filter previews</div>
+<div class="grid">
+${['Original','B&W','Sepia','Vintage','Cool','Warm','Dramatic','Fade','Vivid','Matte','Dream'].map((x,i)=>`
+<button class="tile ${S.filter===x?'active':''}" data-filter="${x}">
+<canvas id="f${i}" width="120" height="82"></canvas>
+<span>${x}</span>
+</button>`).join('')}
+</div>
+<p class="muted">Tap a preview to apply the filter.</p>`;
+
+if(tab==='effects')h=`
+<div class="group">Creative effects</div>
+<div class="grid2">
+${[['Soft glow','glow'],['Soft focus','soft'],['High contrast','contrast'],['Dreamy fade','dream'],['Mono','mono'],['Warm film','film']].map(([n,k])=>`
+<button class="tile" data-effect="${k}">
+<canvas width="120" height="82" id="e-${k}"></canvas>
+<span>${n}</span>
+</button>`).join('')}
+</div>
+<div class="note">These are practical browser-based effect combinations. AI effects need an external service.</div>`;
+
+if(tab==='crop')h=`
+<div class="group">Centre crop presets</div>
+<div class="grid2">
+${['Free','1:1','4:5','3:2','16:9','9:16'].map(x=>`<button class="btn" data-ratio="${x}">${x}</button>`).join('')}
+</div>
+<div class="line"></div>
+<div class="group">Resize dimensions</div>
+<div class="grid2">
+<div class="muted">Width<input id="rw" type="number" min="1" max="12000" value="${cv.width}"></div>
+<div class="muted">Height<input id="rh" type="number" min="1" max="12000" value="${cv.height}"></div>
+</div>
+<button class="btn primary" id="resize" style="margin-top:10px">Apply resize</button>
+<p class="muted">Crop presets permanently crop the current canvas. Undo can restore the previous state.</p>`;
+
+if(tab==='text')h=`
+<div class="group">Add a caption</div>
+<input id="caption" type="text" placeholder="Type your text">
+<div class="grid2" style="margin-top:9px">
+<label class="muted">Font size<input id="tsize" type="number" value="64" min="10" max="500"></label>
+<label class="muted">Font<select id="tfont">
+<option>Arial</option><option>Georgia</option><option>Impact</option><option>Verdana</option><option>Courier New</option>
+</select></label>
+<label class="muted">Text colour<input id="tcolor" type="color" value="#ffffff"></label>
+<label class="muted">Outline<input id="tout" type="color" value="#111111"></label>
+</div>
+<button class="btn primary" id="addtext" style="margin-top:10px">＋ Add text</button>
+<button class="btn" id="cleartext">Clear text</button>
+<div class="note">Text appears in the centre. You can add more than one caption.</div>`;
+
+if(tab==='stickers')h=`
+<div class="group">Stickers & symbols</div>
+<div class="grid">
+${['⭐','❤️','✨','🔥','🌸','🌿','☀️','🎉','💫','📸','🎯','🌈','☕','🦋','🌙','⚡','🎈','💎'].map(x=>`
+<button class="tile" data-sticker="${x}" style="font-size:25px">${x}</button>`).join('')}
+</div>
+<div class="control" style="margin-top:12px">Sticker size
+<input id="ssize" type="range" min="24" max="220" value="90">
+</div>
+<button class="btn" id="clearstick">Clear stickers</button>`;
+
+if(tab==='frames')h=`
+<div class="group">Borders & frames</div>
+<div class="grid2">
+${['None','White border','Black border','Gold','Pink'].map(x=>`
+<button class="tile ${S.frame===x?'active':''}" data-frame="${x}">
+<div style="height:65px;background:#596274;border:9px solid ${({'White border':'white','Black border':'#080808','Gold':'#d6b46b','Pink':'#f4c5d4'})[x]||'#596274'}"></div>
+<span>${x}</span>
+</button>`).join('')}
+</div>`;
+
+if(tab==='color')h=`
+<div class="group">Color grading</div>
+${slider('Exposure / brightness','brightness',0,200,1,'%')}
+${slider('Contrast','contrast',0,200,1,'%')}
+${slider('Vibrance','saturation',0,200,1,'%')}
+${slider('Temperature','warmth',-100,100)}
+${slider('Color shift','hue',-180,180,1,'°')}
+<div class="grid2">
+${['Warm','Cool','Vivid','Matte','Vintage','B&W'].map(x=>`<button class="btn" data-filter="${x}">${x}</button>`).join('')}
+</div>`;
+
+if(tab==='ai')h=`
+<div class="group">AI-powered tools</div>
+<div class="note"><b>AI services are not connected yet.</b><br>These functions need a secure AI provider/API connection. They are shown as unavailable rather than pretending they work.</div>
+<div class="grid2">
+${['Background removal','Background replacement','Object removal','Object addition','AI enhance / upscale','Generative expand','Prompt-to-edit','Image generation','Portrait retouch','Image-to-image'].map(x=>`
+<button class="tile" disabled>
+<span style="white-space:normal">${x}</span>
+<small class="muted">API required</small>
+</button>`).join('')}
+</div>
+<p class="muted">This page does not upload your photo to an AI service.</p>`;
+
+t.innerHTML=h;
+wire();
+if(tab==='filters')filterThumbs();
+if(tab==='effects')effectThumbs();
+}
+
+function wire(){
+document.querySelectorAll('[data-key]').forEach(e=>e.oninput=()=>{
+S[e.dataset.key]=+e.value;
+$('#v-'+e.dataset.key).textContent=e.value+(e.dataset.suffix||'');
+draw();
+});
+
+document.querySelectorAll('[data-filter]').forEach(e=>e.onclick=()=>{
+push();S.filter=e.dataset.filter;draw();renderTools();
+});
+
+document.querySelectorAll('[data-frame]').forEach(e=>e.onclick=()=>{
+push();S.frame=e.dataset.frame;draw();renderTools();
+});
+
+document.querySelectorAll('[data-sticker]').forEach(e=>e.onclick=()=>{
+push();
+S.stickers.push({
+value:e.dataset.sticker,
+size:+($('#ssize')?.value||90),
+x:(Math.random()-.5)*cv.width*.3,
+y:(Math.random()-.5)*cv.height*.3
+});
+draw();
+});
+
+document.querySelectorAll('[data-effect]').forEach(e=>e.onclick=()=>{
+push();
+let k=e.dataset.effect;
+if(k==='glow'){S.brightness=112;S.blur=.5;S.saturation=120}
+else if(k==='soft')S.blur=1.2;
+else if(k==='contrast')S.contrast=145;
+else if(k==='dream'){S.fade=30;S.saturation=125}
+else if(k==='mono')S.filter='B&W';
+else{S.filter='Vintage';S.grain=20}
+draw();renderTools();
+});
+
+document.querySelectorAll('[data-ratio]').forEach(e=>e.onclick=()=>crop(e.dataset.ratio));
+
+$('#resize')?.addEventListener('click',()=>{
+let w=Math.max(1,Math.min(12000,+$('#rw').value||cv.width));
+let h=Math.max(1,Math.min(12000,+$('#rh').value||cv.height));
+push();
+let temp=document.createElement('canvas');
+temp.width=w;temp.height=h;
+temp.getContext('2d').drawImage(cv,0,0,w,h);
+photo=new Image();
+photo.onload=()=>{ow=w;oh=h;S=defaults();draw()};
+photo.src=temp.toDataURL();
+});
+
+$('#addtext')?.addEventListener('click',()=>{
+let v=$('#caption').value.trim();
+if(!v)return;
+push();
+S.texts.push({
+value:v,
+size:Math.max(10,Math.min(500,+$('#tsize').value||64)),
+font:$('#tfont').value,
+color:$('#tcolor').value,
+outline:$('#tout').value,
+x:0,y:0
+});
+draw();
+});
+
+$('#cleartext')?.addEventListener('click',()=>{
+push();S.texts=[];draw();
+});
+
+$('#clearstick')?.addEventListener('click',()=>{
+push();S.stickers=[];draw();
+});
+}
+
+function crop(r){
+if(r==='Free')return;
+let ratio=({'1:1':1,'4:5':.8,'3:2':1.5,'16:9':16/9,'9:16':9/16})[r];
+let w=cv.width,h=cv.height;
+if(w/h>ratio)w=h*ratio;else h=w/ratio;
+push();
+let tmp=document.createElement('canvas');
+tmp.width=Math.round(w);tmp.height=Math.round(h);
+tmp.getContext('2d').drawImage(cv,(cv.width-w)/2,(cv.height-h)/2,w,h,0,0,tmp.width,tmp.height);
+let im=new Image();
+im.onload=()=>{photo=im;ow=im.width;oh=im.height;S=defaults();draw()};
+im.src=tmp.toDataURL();
+}
+
+function filterThumbs(){
+['Original','B&W','Sepia','Vintage','Cool','Warm','Dramatic','Fade','Vivid','Matte','Dream'].forEach((n,i)=>{
+let c=$('#f'+i),x=c.getContext('2d');
+x.fillStyle='#536b7b';x.fillRect(0,0,120,82);
+x.fillStyle='#e8bd92';x.beginPath();x.arc(60,30,19,0,7);x.fill();
+x.fillStyle='#294052';x.fillRect(30,49,60,33);
+x.filter=({'B&W':'grayscale(1)','Sepia':'sepia(1)','Vintage':'sepia(.6)','Cool':'hue-rotate(20deg)','Warm':'sepia(.3)','Dramatic':'contrast(1.5)','Fade':'brightness(1.2) contrast(.8)','Vivid':'saturate(2)','Matte':'contrast(.8)','Dream':'brightness(1.15) saturate(1.3)'})[n]||'none';
+x.drawImage(c,0,0);
+x.filter='none';
+});
+}
+
+function effectThumbs(){
+['glow','soft','contrast','dream','mono','film'].forEach(k=>{
+let c=$('#e-'+k),x=c.getContext('2d');
+x.fillStyle='#607b91';x.fillRect(0,0,120,82);
+x.fillStyle='#e9bd91';x.beginPath();x.arc(60,30,19,0,7);x.fill();
+x.fillStyle='#253c50';x.fillRect(30,49,60,33);
+if(k==='mono'){x.filter='grayscale(1)';x.drawImage(c,0,0);x.filter='none'}
+});
+}
+
+document.querySelectorAll('.cat').forEach(b=>b.onclick=()=>{
+tab=b.dataset.tab;
+document.querySelectorAll('.cat').forEach(x=>x.classList.toggle('active',x===b));
+renderTools();
+});
+
+$('#undo').onclick=()=>{
+if(!hist.length)return;
+redoStack.push(snap());
+S=JSON.parse(hist.pop());
+draw();renderTools();buttons();
+};
+
+$('#redo').onclick=()=>{
+if(!redoStack.length)return;
+hist.push(snap());
+S=JSON.parse(redoStack.pop());
+draw();renderTools();buttons();
+};
+
+$('#reset').onclick=()=>{
+push();S=defaults();draw();renderTools();
+};
+
+$('#rotate').onclick=()=>{
+push();S.rotation=(S.rotation+90)%360;draw();
+};
+
+$('#flip').onclick=()=>{
+push();S.flip=!S.flip;draw();
+};
+
+$('#before').onpointerdown=()=>{
+if(photo){
+showingBefore=true;
+cv.width=ow;cv.height=oh;
+cx.filter='none';
+cx.drawImage(photo,0,0,ow,oh);
+}
+};
+
+$('#before').onpointerup=$('#before').onpointerleave=()=>{
+if(showingBefore){showingBefore=false;draw()}
+};
+
+$('#save').onclick=()=>{
+if(!photo)return;
+let a=document.createElement('a');
+a.download='editora-photo.png';
+a.href=cv.toDataURL('image/png');
+a.click();
+};
+
+buttons();
+renderTools();
 </script>
-</body></html>
+</body>
+</html>
