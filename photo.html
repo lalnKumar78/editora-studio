@@ -5,36 +5,32 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#10131c">
-<title>Editora Studio Photo Editor</title>
+<title>Editora Studio - Photo Editor</title>
 <style>
 :root{--bg:#0b0e16;--p:#151b29;--p2:#20283a;--line:#30394d;--txt:#f4f6fb;--muted:#aab4c6;--a:#8b7cff}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--txt);font:15px system-ui,Arial}
 button,input,select{font:inherit}
 button{cursor:pointer}
-.top{height:60px;background:#111725;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:sticky;top:0;z-index:5}
-.brand{font-weight:900;font-size:18px}
-.brand b{color:var(--a)}
-.btn{border:1px solid var(--line);background:var(--p2);color:var(--txt);border-radius:10px;padding:9px 12px;font-weight:650}
+.top{height:60px;background:#111725;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:sticky;top:0;z-index:10}
+.brand{font-weight:900;font-size:18px}.brand b{color:var(--a)}
+.btn{border:1px solid var(--line);background:var(--p2);color:white;border-radius:10px;padding:9px 12px;font-weight:650}
 .primary{background:var(--a);border-color:var(--a)}
 button:disabled{opacity:.4;cursor:not-allowed}
 .work{max-width:1450px;margin:auto;padding:14px;display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:14px;align-items:start}
 .stage{height:min(66vh,690px);min-height:350px;position:sticky;top:74px;background:#070910;border:1px solid var(--line);border-radius:15px;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.stage canvas{max-width:100%;max-height:100%}
-.empty{text-align:center;color:var(--muted);padding:25px}
-.empty h2{color:white}
+.stage canvas{max-width:100%;max-height:100%;touch-action:none;cursor:grab}
+.empty{text-align:center;color:var(--muted);padding:25px}.empty h2{color:white}
 .utils{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
 .panel{background:var(--p);border:1px solid var(--line);border-radius:15px;overflow:hidden}
-.head{padding:14px;border-bottom:1px solid var(--line)}
-.head h2{margin:0;font-size:17px}
+.head{padding:14px;border-bottom:1px solid var(--line)}.head h2{margin:0;font-size:17px}
 .head p,.muted{color:var(--muted);font-size:12px;margin:4px 0}
 .cats{display:flex;gap:7px;padding:10px;overflow:auto;border-bottom:1px solid var(--line)}
 .cat{white-space:nowrap;background:#101624;color:#cbd3e1;border:1px solid var(--line);border-radius:9px;padding:8px 11px;font-size:12px}
 .cat.active{background:#332d5b;border-color:var(--a);color:white}
 .tools{padding:14px;max-height:calc(100vh - 195px);overflow:auto}
 .group{font-weight:800;font-size:13px;margin:4px 0 12px}
-.control{margin:0 0 15px}
-.ch{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}
+.control{margin:0 0 15px}.ch{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}
 .ch output{color:#65dec7}
 input[type=range]{width:100%;accent-color:var(--a)}
 input[type=text],input[type=number],select{width:100%;background:#0e1421;color:white;border:1px solid var(--line);border-radius:8px;padding:9px}
@@ -46,15 +42,12 @@ input[type=text],input[type=number],select{width:100%;background:#0e1421;color:w
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .note{background:#101a29;border:1px solid #2b3a50;padding:10px;border-radius:9px;color:#c4cede;font-size:12px;margin:10px 0}
 .line{height:1px;background:var(--line);margin:15px 0}
-.hidden{display:none!important}
-#file{display:none}
+.hidden{display:none!important}#file{display:none}
 @media(max-width:900px){
 .work{display:flex;flex-direction:column;padding:9px}
-.stage{width:100%;height:37vh;min-height:220px;max-height:430px;top:66px;z-index:2}
-.panel{width:100%;overflow:visible}
-.tools{max-height:none;overflow:visible}
-.top{height:56px;padding:0 10px}
-.btn{padding:8px 10px;font-size:12px}
+.stage{width:100%;height:37vh;min-height:220px;max-height:430px;top:56px;z-index:2}
+.panel{width:100%;overflow:visible}.tools{max-height:none;overflow:visible}
+.top{height:56px;padding:0 10px}.btn{padding:8px 10px;font-size:12px}
 }
 </style>
 </head>
@@ -66,9 +59,7 @@ input[type=text],input[type=number],select{width:100%;background:#0e1421;color:w
 <button class="btn primary" id="save">Download</button>
 </div>
 </header>
-
 <input id="file" type="file" accept="image/*">
-
 <main class="work">
 <section>
 <div class="stage" id="stage">
@@ -80,7 +71,6 @@ input[type=text],input[type=number],select{width:100%;background:#0e1421;color:w
 </div>
 <canvas id="cv" class="hidden"></canvas>
 </div>
-
 <div class="utils">
 <button class="btn" id="undo" disabled>↶ Undo</button>
 <button class="btn" id="redo" disabled>↷ Redo</button>
@@ -90,13 +80,8 @@ input[type=text],input[type=number],select{width:100%;background:#0e1421;color:w
 <button class="btn" id="flip" disabled>⇋ Flip</button>
 </div>
 </section>
-
 <section class="panel">
-<div class="head">
-<h2>Photo Editor</h2>
-<p>Live editing · Changes appear on your photo instantly</p>
-</div>
-
+<div class="head"><h2>Photo Editor</h2><p>Live editing · Changes appear instantly</p></div>
 <nav class="cats">
 <button class="cat active" data-tab="adjust">Adjust</button>
 <button class="cat" data-tab="filters">Filters</button>
@@ -108,460 +93,185 @@ input[type=text],input[type=number],select{width:100%;background:#0e1421;color:w
 <button class="cat" data-tab="color">Color</button>
 <button class="cat" data-tab="ai">AI tools</button>
 </nav>
-
 <div class="tools" id="tools"></div>
 </section>
 </main>
 
 <script>
-const $=s=>document.querySelector(s),
-cv=$('#cv'),
-cx=cv.getContext('2d'),
-file=$('#file');
-
-let photo=null,ow=0,oh=0,tab='adjust',hist=[],redoStack=[],showingBefore=false;
-
-const defaults=()=>({
-brightness:100,contrast:100,saturation:100,
-warmth:0,hue:0,blur:0,fade:0,vignette:0,grain:0,
-filter:'Original',frame:'None',rotation:0,flip:false,
-texts:[],stickers:[]
-});
-
+const $=s=>document.querySelector(s),cv=$('#cv'),cx=cv.getContext('2d'),file=$('#file');
+let photo=null,original=null,ow=0,oh=0,tab='adjust',hist=[],redoStack=[],showingBefore=false,drag=null;
+const defaults=()=>({brightness:100,contrast:100,saturation:100,warmth:0,hue:0,blur:0,fade:0,vignette:0,grain:0,filter:'Original',frame:'None',rotation:0,flip:false,texts:[],stickers:[]});
 let S=defaults();
 
-function snap(){return JSON.stringify(S)}
+const filters={
+'B&W':'grayscale(1)','Sepia':'sepia(.9)','Vintage':'sepia(.4) saturate(.8) contrast(1.08)',
+'Cool':'hue-rotate(12deg) saturate(1.1)','Warm':'sepia(.2) saturate(1.2)',
+'Dramatic':'contrast(1.35) saturate(1.15)','Fade':'contrast(.85) brightness(1.08) saturate(.8)',
+'Vivid':'saturate(1.6) contrast(1.08)','Matte':'contrast(.88) saturate(.85) brightness(1.05)',
+'Dream':'brightness(1.1) saturate(1.15)'
+};
+function cssFilter(){return filters[S.filter]||''}
 
+function imageData(im){
+let c=document.createElement('canvas');c.width=im.naturalWidth||im.width;c.height=im.naturalHeight||im.height;
+c.getContext('2d').drawImage(im,0,0);return c.toDataURL('image/png');
+}
+function snapshot(){return {data:imageData(photo),state:JSON.parse(JSON.stringify(S))}}
 function push(){
 if(!photo)return;
-hist.push(snap());
-if(hist.length>35)hist.shift();
-redoStack=[];
-buttons();
+hist.push(snapshot());if(hist.length>20)hist.shift();redoStack=[];buttons();
 }
-
+function restore(item){
+let im=new Image();
+im.onload=()=>{photo=im;ow=im.width;oh=im.height;S=item.state;draw();renderTools();buttons()};
+im.src=item.data;
+}
 function buttons(){
-['undo','redo','before','reset','rotate','flip','save'].forEach(id=>{
-$('#'+id).disabled=!photo||
-((id==='undo')&&!hist.length)||
-((id==='redo')&&!redoStack.length);
-});
+$('#undo').disabled=!photo||!hist.length;
+$('#redo').disabled=!photo||!redoStack.length;
+['before','reset','rotate','flip','save'].forEach(id=>$('#'+id).disabled=!photo);
 }
 
 function load(f){
 if(!f||!f.type.startsWith('image/'))return;
-let u=URL.createObjectURL(f),im=new Image();
+let url=URL.createObjectURL(f),im=new Image();
 im.onload=()=>{
-photo=im;
-ow=im.naturalWidth;
-oh=im.naturalHeight;
-S=defaults();
-hist=[];
-redoStack=[];
-$('#empty').classList.add('hidden');
-cv.classList.remove('hidden');
-draw();
-renderTools();
-buttons();
-URL.revokeObjectURL(u);
+photo=im;original=imageData(im);ow=im.width;oh=im.height;S=defaults();
+hist=[];redoStack=[];$('#empty').classList.add('hidden');cv.classList.remove('hidden');
+draw();renderTools();buttons();URL.revokeObjectURL(url);
 };
-im.src=u;
+im.src=url;
 }
-
 $('#open').onclick=$('#choose').onclick=()=>file.click();
 file.onchange=e=>load(e.target.files[0]);
 
-function filterCss(){
-return ({
-'B&W':'grayscale(1)',
-'Sepia':'sepia(.9)',
-'Vintage':'sepia(.4) saturate(.8) contrast(1.08)',
-'Cool':'hue-rotate(12deg) saturate(1.1)',
-'Warm':'sepia(.2) saturate(1.2)',
-'Dramatic':'contrast(1.35) saturate(1.15)',
-'Fade':'contrast(.85) brightness(1.08) saturate(.8)',
-'Vivid':'saturate(1.6) contrast(1.08)',
-'Matte':'contrast(.88) saturate(.85) brightness(1.05)',
-'Dream':'brightness(1.1) saturate(1.15)'
-})[S.filter]||'';
-}
-
 function draw(){
 if(!photo)return;
-let r=((S.rotation%360)+360)%360;
-let w=(r===90||r===270)?oh:ow;
-let h=(r===90||r===270)?ow:oh;
-
-cv.width=w;
-cv.height=h;
-
-cx.save();
-cx.translate(w/2,h/2);
-cx.rotate(r*Math.PI/180);
-cx.scale(S.flip?-1:1,1);
-cx.filter=`brightness(${S.brightness}%) contrast(${S.contrast}%) saturate(${S.saturation}%) hue-rotate(${S.hue}deg) blur(${S.blur}px) ${filterCss()}`;
-cx.drawImage(photo,-ow/2,-oh/2);
-cx.restore();
-cx.filter='none';
-
-if(S.warmth){
-cx.globalAlpha=Math.abs(S.warmth)/180;
-cx.fillStyle=S.warmth>0?'#ff9b42':'#559cff';
-cx.fillRect(0,0,w,h);
-cx.globalAlpha=1;
-}
-
-if(S.fade){
-cx.globalAlpha=S.fade/200;
-cx.fillStyle='#f5e9cf';
-cx.fillRect(0,0,w,h);
-cx.globalAlpha=1;
-}
-
-if(S.vignette){
-let g=cx.createRadialGradient(w/2,h/2,Math.min(w,h)*.18,w/2,h/2,Math.max(w,h)*.7);
-g.addColorStop(0,'transparent');
-g.addColorStop(1,`rgba(0,0,0,${S.vignette/100})`);
-cx.fillStyle=g;
-cx.fillRect(0,0,w,h);
-}
-
-if(S.grain){
-cx.globalAlpha=S.grain/250;
-for(let i=0,n=Math.min(12000,w*h/100*S.grain/100);i<n;i++){
-cx.fillStyle=Math.random()>.5?'white':'black';
-cx.fillRect(Math.random()*w,Math.random()*h,1,1);
-}
-cx.globalAlpha=1;
-}
-
-if(S.frame!=='None'){
-cx.strokeStyle=({
-'White border':'white',
-'Black border':'#080808',
-'Gold':'#d6b46b',
-'Pink':'#f4c5d4'
-})[S.frame];
-cx.lineWidth=Math.max(8,Math.min(w,h)*.025);
-cx.strokeRect(4,4,w-8,h-8);
-}
-
-S.stickers.forEach(s=>{
-cx.font=`${s.size}px Arial`;
-cx.textAlign='center';
-cx.fillText(s.value,w/2+s.x,h/2+s.y);
-});
-
-S.texts.forEach(t=>{
-cx.save();
-cx.font=`bold ${t.size}px ${t.font}`;
-cx.textAlign='center';
-cx.lineWidth=Math.max(2,t.size/12);
-cx.strokeStyle=t.outline;
-cx.fillStyle=t.color;
-cx.strokeText(t.value,w/2+t.x,h/2+t.y);
-cx.fillText(t.value,w/2+t.x,h/2+t.y);
-cx.restore();
-});
+let r=((S.rotation%360)+360)%360,w=(r===90||r===270)?oh:ow,h=(r===90||r===270)?ow:oh;
+cv.width=w;cv.height=h;
+cx.save();cx.translate(w/2,h/2);cx.rotate(r*Math.PI/180);cx.scale(S.flip?-1:1,1);
+cx.filter=`brightness(${S.brightness}%) contrast(${S.contrast}%) saturate(${S.saturation}%) hue-rotate(${S.hue}deg) blur(${S.blur}px) ${cssFilter()}`;
+cx.drawImage(photo,-ow/2,-oh/2);cx.restore();cx.filter='none';
+if(S.warmth){cx.globalAlpha=Math.abs(S.warmth)/180;cx.fillStyle=S.warmth>0?'#ff9b42':'#559cff';cx.fillRect(0,0,w,h);cx.globalAlpha=1}
+if(S.fade){cx.globalAlpha=S.fade/200;cx.fillStyle='#f5e9cf';cx.fillRect(0,0,w,h);cx.globalAlpha=1}
+if(S.vignette){let g=cx.createRadialGradient(w/2,h/2,Math.min(w,h)*.18,w/2,h/2,Math.max(w,h)*.7);g.addColorStop(0,'transparent');g.addColorStop(1,`rgba(0,0,0,${S.vignette/100})`);cx.fillStyle=g;cx.fillRect(0,0,w,h)}
+if(S.grain){cx.globalAlpha=S.grain/250;for(let i=0,n=Math.min(12000,w*h/100*S.grain/100);i<n;i++){cx.fillStyle=Math.random()>.5?'white':'black';cx.fillRect(Math.random()*w,Math.random()*h,1,1)}cx.globalAlpha=1}
+if(S.frame!=='None'){cx.strokeStyle=({'White border':'white','Black border':'#080808','Gold':'#d6b46b','Pink':'#f4c5d4','Blue':'#7ab9ed','Neon':'#9c7cff'})[S.frame];cx.lineWidth=Math.max(8,Math.min(w,h)*.025);cx.strokeRect(4,4,w-8,h-8)}
+S.stickers.forEach(s=>{cx.font=`${s.size}px Arial`;cx.textAlign='center';cx.fillText(s.value,w/2+s.x,h/2+s.y)});
+S.texts.forEach(t=>{cx.save();cx.font=`bold ${t.size}px ${t.font}`;cx.textAlign='center';cx.lineWidth=Math.max(2,t.size/12);cx.strokeStyle=t.outline;cx.fillStyle=t.color;cx.strokeText(t.value,w/2+t.x,h/2+t.y);cx.fillText(t.value,w/2+t.x,h/2+t.y);cx.restore()});
 }
 
 function slider(label,key,min,max,step=1,suffix=''){
-return `<div class="control">
-<div class="ch"><label>${label}</label><output id="v-${key}">${S[key]}${suffix}</output></div>
-<input type="range" min="${min}" max="${max}" step="${step}" value="${S[key]}" data-key="${key}" data-suffix="${suffix}">
-</div>`;
+return `<div class="control"><div class="ch"><label>${label}</label><output id="v-${key}">${S[key]}${suffix}</output></div><input type="range" min="${min}" max="${max}" step="${step}" value="${S[key]}" data-key="${key}" data-suffix="${suffix}"></div>`;
 }
-
 function renderTools(){
-let t=$('#tools');
-if(!photo){
-t.innerHTML='<div class="note">Choose a photo first. Standard editing runs locally in your browser.</div>';
-return;
-}
+let t=$('#tools');if(!photo){t.innerHTML='<div class="note">Choose a photo first. Editing runs locally in your browser.</div>';return}
 let h='';
+if(tab==='adjust')h=`<div class="group">Light & detail</div>${slider('Brightness','brightness',0,200,1,'%')}${slider('Contrast','contrast',0,200,1,'%')}${slider('Saturation','saturation',0,200,1,'%')}${slider('Blur','blur',0,12,.2,' px')}${slider('Fade','fade',0,100)}${slider('Vignette','vignette',0,100)}${slider('Grain','grain',0,100)}<div class="line"></div><div class="group">Temperature & tone</div>${slider('Warm ↔ Cool','warmth',-100,100)}${slider('Hue','hue',-180,180,1,'°')}`;
+if(tab==='filters')h=`<div class="group">Your photo · Filter previews</div><div class="grid">${['Original',...Object.keys(filters)].map((x,i)=>`<button class="tile ${S.filter===x?'active':''}" data-filter="${x}"><canvas id="f${i}" width="120" height="82"></canvas><span>${x}</span></button>`).join('')}</div><p class="muted">Previews are generated from your uploaded photo.</p>`;
+if(tab==='effects')h=`<div class="group">Creative effects</div><div class="grid2">${[['Soft glow','glow'],['Soft focus','soft'],['High contrast','contrast'],['Dreamy fade','dream'],['Mono','mono'],['Warm film','film']].map(([n,k])=>`<button class="tile" data-effect="${k}"><canvas id="e-${k}" width="120" height="82"></canvas><span>${n}</span></button>`).join('')}</div><div class="note">Browser-based effects. AI effects need an external API.</div>`;
+if(tab==='crop')h=`<div class="group">Centre crop presets</div><div class="grid2">${['Free','1:1','4:5','3:2','16:9','9:16'].map(x=>`<button class="btn" data-ratio="${x}">${x}</button>`).join('')}</div><div class="line"></div><div class="group">Resize dimensions</div><div class="grid2"><label class="muted">Width<input id="rw" type="number" min="1" max="12000" value="${cv.width}"></label><label class="muted">Height<input id="rh" type="number" min="1" max="12000" value="${cv.height}"></label></div><button class="btn primary" id="resize" style="margin-top:10px">Apply resize</button><p class="muted">Crop and resize can be undone.</p>`;
+if(tab==='text')h=`<div class="group">Add a caption</div><input id="caption" type="text" placeholder="Type your text"><div class="grid2" style="margin-top:9px"><label class="muted">Font size<input id="tsize" type="number" value="64" min="10" max="500"></label><label class="muted">Font<select id="tfont"><option>Arial</option><option>Georgia</option><option>Impact</option><option>Verdana</option><option>Courier New</option></select></label><label class="muted">Text colour<input id="tcolor" type="color" value="#ffffff"></label><label class="muted">Outline<input id="tout" type="color" value="#111111"></label></div><button class="btn primary" id="addtext" style="margin-top:10px">＋ Add text</button><button class="btn" id="cleartext">Clear text</button><div class="note">Drag text directly on the photo to reposition it.</div>`;
+if(tab==='stickers')h=`<div class="group">Stickers & symbols</div><div class="grid">${['⭐','❤️','✨','🔥','🌸','🌿','☀️','🎉','💫','📸','🎯','🌈','☕','🦋','🌙','⚡','🎈','💎','🎵','👑','🌻','💖','🍀','🎀'].map(x=>`<button class="tile" data-sticker="${x}" style="font-size:25px">${x}</button>`).join('')}</div><div class="control" style="margin-top:12px">Sticker size<input id="ssize" type="range" min="24" max="220" value="90"></div><button class="btn" id="clearstick">Clear stickers</button><div class="note">Drag stickers directly on the photo to reposition them.</div>`;
+if(tab==='frames')h=`<div class="group">Borders & frames</div><div class="grid2">${['None','White border','Black border','Gold','Pink','Blue','Neon'].map(x=>`<button class="tile ${S.frame===x?'active':''}" data-frame="${x}"><div style="height:65px;background:#596274;border:9px solid ${({'White border':'white','Black border':'#080808','Gold':'#d6b46b','Pink':'#f4c5d4','Blue':'#7ab9ed','Neon':'#9c7cff'})[x]||'#596274'}"></div><span>${x}</span></button>`).join('')}</div>`;
+if(tab==='color')h=`<div class="group">Color grading</div>${slider('Exposure','brightness',0,200,1,'%')}${slider('Contrast','contrast',0,200,1,'%')}${slider('Vibrance','saturation',0,200,1,'%')}${slider('Temperature','warmth',-100,100)}${slider('Color shift','hue',-180,180,1,'°')}<div class="grid2">${['Warm','Cool','Vivid','Matte','Vintage','B&W'].map(x=>`<button class="btn" data-filter="${x}">${x}</button>`).join('')}</div>`;
+if(tab==='ai')h=`<div class="group">AI-powered tools</div><div class="note"><b>AI services are not connected yet.</b><br>These functions require a secure AI provider/API connection. They are unavailable until connected.</div><div class="grid2">${['Background removal','Background replacement','Object removal','Object addition','AI enhance / upscale','Generative expand','Prompt-to-edit','Image generation','Portrait retouch','Image-to-image'].map(x=>`<button class="tile" disabled><span>${x}</span><small class="muted">API required</small></button>`).join('')}</div><p class="muted">Your photo is not sent to an AI service by this page.</p>`;
+t.innerHTML=h;wire();if(tab==='filters')filterThumbs();if(tab==='effects')effectThumbs();
+}
 
-if(tab==='adjust')h=`
-<div class="group">Light & detail</div>
-${slider('Brightness','brightness',0,200,1,'%')}
-${slider('Contrast','contrast',0,200,1,'%')}
-${slider('Saturation','saturation',0,200,1,'%')}
-${slider('Blur','blur',0,12,.2,' px')}
-${slider('Fade','fade',0,100)}
-${slider('Vignette','vignette',0,100)}
-${slider('Grain','grain',0,100)}
-<div class="line"></div>
-<div class="group">Temperature & tone</div>
-${slider('Warm ↔ Cool','warmth',-100,100)}
-${slider('Hue','hue',-180,180,1,'°')}`;
-
-if(tab==='filters')h=`
-<div class="group">Filter previews</div>
-<div class="grid">
-${['Original','B&W','Sepia','Vintage','Cool','Warm','Dramatic','Fade','Vivid','Matte','Dream'].map((x,i)=>`
-<button class="tile ${S.filter===x?'active':''}" data-filter="${x}">
-<canvas id="f${i}" width="120" height="82"></canvas>
-<span>${x}</span>
-</button>`).join('')}
-</div>
-<p class="muted">Tap a preview to apply the filter.</p>`;
-
-if(tab==='effects')h=`
-<div class="group">Creative effects</div>
-<div class="grid2">
-${[['Soft glow','glow'],['Soft focus','soft'],['High contrast','contrast'],['Dreamy fade','dream'],['Mono','mono'],['Warm film','film']].map(([n,k])=>`
-<button class="tile" data-effect="${k}">
-<canvas width="120" height="82" id="e-${k}"></canvas>
-<span>${n}</span>
-</button>`).join('')}
-</div>
-<div class="note">These are practical browser-based effect combinations. AI effects need an external service.</div>`;
-
-if(tab==='crop')h=`
-<div class="group">Centre crop presets</div>
-<div class="grid2">
-${['Free','1:1','4:5','3:2','16:9','9:16'].map(x=>`<button class="btn" data-ratio="${x}">${x}</button>`).join('')}
-</div>
-<div class="line"></div>
-<div class="group">Resize dimensions</div>
-<div class="grid2">
-<div class="muted">Width<input id="rw" type="number" min="1" max="12000" value="${cv.width}"></div>
-<div class="muted">Height<input id="rh" type="number" min="1" max="12000" value="${cv.height}"></div>
-</div>
-<button class="btn primary" id="resize" style="margin-top:10px">Apply resize</button>
-<p class="muted">Crop presets permanently crop the current canvas. Undo can restore the previous state.</p>`;
-
-if(tab==='text')h=`
-<div class="group">Add a caption</div>
-<input id="caption" type="text" placeholder="Type your text">
-<div class="grid2" style="margin-top:9px">
-<label class="muted">Font size<input id="tsize" type="number" value="64" min="10" max="500"></label>
-<label class="muted">Font<select id="tfont">
-<option>Arial</option><option>Georgia</option><option>Impact</option><option>Verdana</option><option>Courier New</option>
-</select></label>
-<label class="muted">Text colour<input id="tcolor" type="color" value="#ffffff"></label>
-<label class="muted">Outline<input id="tout" type="color" value="#111111"></label>
-</div>
-<button class="btn primary" id="addtext" style="margin-top:10px">＋ Add text</button>
-<button class="btn" id="cleartext">Clear text</button>
-<div class="note">Text appears in the centre. You can add more than one caption.</div>`;
-
-if(tab==='stickers')h=`
-<div class="group">Stickers & symbols</div>
-<div class="grid">
-${['⭐','❤️','✨','🔥','🌸','🌿','☀️','🎉','💫','📸','🎯','🌈','☕','🦋','🌙','⚡','🎈','💎'].map(x=>`
-<button class="tile" data-sticker="${x}" style="font-size:25px">${x}</button>`).join('')}
-</div>
-<div class="control" style="margin-top:12px">Sticker size
-<input id="ssize" type="range" min="24" max="220" value="90">
-</div>
-<button class="btn" id="clearstick">Clear stickers</button>`;
-
-if(tab==='frames')h=`
-<div class="group">Borders & frames</div>
-<div class="grid2">
-${['None','White border','Black border','Gold','Pink'].map(x=>`
-<button class="tile ${S.frame===x?'active':''}" data-frame="${x}">
-<div style="height:65px;background:#596274;border:9px solid ${({'White border':'white','Black border':'#080808','Gold':'#d6b46b','Pink':'#f4c5d4'})[x]||'#596274'}"></div>
-<span>${x}</span>
-</button>`).join('')}
-</div>`;
-
-if(tab==='color')h=`
-<div class="group">Color grading</div>
-${slider('Exposure / brightness','brightness',0,200,1,'%')}
-${slider('Contrast','contrast',0,200,1,'%')}
-${slider('Vibrance','saturation',0,200,1,'%')}
-${slider('Temperature','warmth',-100,100)}
-${slider('Color shift','hue',-180,180,1,'°')}
-<div class="grid2">
-${['Warm','Cool','Vivid','Matte','Vintage','B&W'].map(x=>`<button class="btn" data-filter="${x}">${x}</button>`).join('')}
-</div>`;
-
-if(tab==='ai')h=`
-<div class="group">AI-powered tools</div>
-<div class="note"><b>AI services are not connected yet.</b><br>These functions need a secure AI provider/API connection. They are shown as unavailable rather than pretending they work.</div>
-<div class="grid2">
-${['Background removal','Background replacement','Object removal','Object addition','AI enhance / upscale','Generative expand','Prompt-to-edit','Image generation','Portrait retouch','Image-to-image'].map(x=>`
-<button class="tile" disabled>
-<span style="white-space:normal">${x}</span>
-<small class="muted">API required</small>
-</button>`).join('')}
-</div>
-<p class="muted">This page does not upload your photo to an AI service.</p>`;
-
-t.innerHTML=h;
-wire();
-if(tab==='filters')filterThumbs();
-if(tab==='effects')effectThumbs();
+function makeThumb(c,filter){
+let x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);x.save();x.filter=filter||'none';
+let scale=Math.max(c.width/photo.width,c.height/photo.height),w=photo.width*scale,hh=photo.height*scale;
+x.drawImage(photo,(c.width-w)/2,(c.height-hh)/2,w,hh);x.restore();
+}
+function filterThumbs(){
+['Original',...Object.keys(filters)].forEach((n,i)=>{let c=$('#f'+i);if(c)makeThumb(c,filters[n]||'none')});
+}
+function effectThumbs(){
+let map={glow:'brightness(1.12) saturate(1.2)',soft:'blur(1px) brightness(1.08)',contrast:'contrast(1.45)',dream:'brightness(1.12) saturate(1.2)',mono:'grayscale(1)',film:'sepia(.5) contrast(1.1)'};
+Object.keys(map).forEach(k=>{let c=$('#e-'+k);if(c)makeThumb(c,map[k])});
 }
 
 function wire(){
-document.querySelectorAll('[data-key]').forEach(e=>e.oninput=()=>{
-S[e.dataset.key]=+e.value;
-$('#v-'+e.dataset.key).textContent=e.value+(e.dataset.suffix||'');
-draw();
+document.querySelectorAll('[data-key]').forEach(e=>{
+let started=false;
+e.onpointerdown=()=>{if(!started){push();started=true}};
+e.onchange=()=>{started=false};
+e.oninput=()=>{S[e.dataset.key]=+e.value;$('#v-'+e.dataset.key).textContent=e.value+(e.dataset.suffix||'');draw()};
 });
-
-document.querySelectorAll('[data-filter]').forEach(e=>e.onclick=()=>{
-push();S.filter=e.dataset.filter;draw();renderTools();
-});
-
-document.querySelectorAll('[data-frame]').forEach(e=>e.onclick=()=>{
-push();S.frame=e.dataset.frame;draw();renderTools();
-});
-
-document.querySelectorAll('[data-sticker]').forEach(e=>e.onclick=()=>{
-push();
-S.stickers.push({
-value:e.dataset.sticker,
-size:+($('#ssize')?.value||90),
-x:(Math.random()-.5)*cv.width*.3,
-y:(Math.random()-.5)*cv.height*.3
-});
-draw();
-});
-
+document.querySelectorAll('[data-filter]').forEach(e=>e.onclick=()=>{push();S.filter=e.dataset.filter;draw();renderTools()});
+document.querySelectorAll('[data-frame]').forEach(e=>e.onclick=()=>{push();S.frame=e.dataset.frame;draw();renderTools()});
+document.querySelectorAll('[data-sticker]').forEach(e=>e.onclick=()=>{push();S.stickers.push({value:e.dataset.sticker,size:+($('#ssize')?.value||90),x:0,y:0});draw()});
 document.querySelectorAll('[data-effect]').forEach(e=>e.onclick=()=>{
-push();
-let k=e.dataset.effect;
+push();let k=e.dataset.effect;
 if(k==='glow'){S.brightness=112;S.blur=.5;S.saturation=120}
-else if(k==='soft')S.blur=1.2;
-else if(k==='contrast')S.contrast=145;
+else if(k==='soft')S.blur=1.2;else if(k==='contrast')S.contrast=145;
 else if(k==='dream'){S.fade=30;S.saturation=125}
-else if(k==='mono')S.filter='B&W';
-else{S.filter='Vintage';S.grain=20}
+else if(k==='mono')S.filter='B&W';else{S.filter='Vintage';S.grain=20}
 draw();renderTools();
 });
-
 document.querySelectorAll('[data-ratio]').forEach(e=>e.onclick=()=>crop(e.dataset.ratio));
-
 $('#resize')?.addEventListener('click',()=>{
-let w=Math.max(1,Math.min(12000,+$('#rw').value||cv.width));
-let h=Math.max(1,Math.min(12000,+$('#rh').value||cv.height));
-push();
-let temp=document.createElement('canvas');
-temp.width=w;temp.height=h;
-temp.getContext('2d').drawImage(cv,0,0,w,h);
-photo=new Image();
-photo.onload=()=>{ow=w;oh=h;S=defaults();draw()};
-photo.src=temp.toDataURL();
+let w=Math.max(1,Math.min(12000,+$('#rw').value||cv.width)),h=Math.max(1,Math.min(12000,+$('#rh').value||cv.height));
+push();let tmp=document.createElement('canvas');tmp.width=w;tmp.height=h;tmp.getContext('2d').drawImage(cv,0,0,w,h);replacePhoto(tmp);
 });
-
 $('#addtext')?.addEventListener('click',()=>{
-let v=$('#caption').value.trim();
-if(!v)return;
-push();
-S.texts.push({
-value:v,
-size:Math.max(10,Math.min(500,+$('#tsize').value||64)),
-font:$('#tfont').value,
-color:$('#tcolor').value,
-outline:$('#tout').value,
-x:0,y:0
+let v=$('#caption').value.trim();if(!v)return;push();
+S.texts.push({value:v,size:Math.max(10,Math.min(500,+$('#tsize').value||64)),font:$('#tfont').value,color:$('#tcolor').value,outline:$('#tout').value,x:0,y:0});draw();
 });
-draw();
-});
-
-$('#cleartext')?.addEventListener('click',()=>{
-push();S.texts=[];draw();
-});
-
-$('#clearstick')?.addEventListener('click',()=>{
-push();S.stickers=[];draw();
-});
+$('#cleartext')?.addEventListener('click',()=>{push();S.texts=[];draw()});
+$('#clearstick')?.addEventListener('click',()=>{push();S.stickers=[];draw()});
 }
-
+function replacePhoto(canvas){
+let im=new Image();im.onload=()=>{photo=im;ow=im.width;oh=im.height;S=defaults();draw();renderTools()};im.src=canvas.toDataURL('image/png');
+}
 function crop(r){
 if(r==='Free')return;
-let ratio=({'1:1':1,'4:5':.8,'3:2':1.5,'16:9':16/9,'9:16':9/16})[r];
-let w=cv.width,h=cv.height;
+let ratio=({'1:1':1,'4:5':.8,'3:2':1.5,'16:9':16/9,'9:16':9/16})[r],w=cv.width,h=cv.height;
 if(w/h>ratio)w=h*ratio;else h=w/ratio;
-push();
-let tmp=document.createElement('canvas');
-tmp.width=Math.round(w);tmp.height=Math.round(h);
-tmp.getContext('2d').drawImage(cv,(cv.width-w)/2,(cv.height-h)/2,w,h,0,0,tmp.width,tmp.height);
-let im=new Image();
-im.onload=()=>{photo=im;ow=im.width;oh=im.height;S=defaults();draw()};
-im.src=tmp.toDataURL();
-}
-
-function filterThumbs(){
-['Original','B&W','Sepia','Vintage','Cool','Warm','Dramatic','Fade','Vivid','Matte','Dream'].forEach((n,i)=>{
-let c=$('#f'+i),x=c.getContext('2d');
-x.fillStyle='#536b7b';x.fillRect(0,0,120,82);
-x.fillStyle='#e8bd92';x.beginPath();x.arc(60,30,19,0,7);x.fill();
-x.fillStyle='#294052';x.fillRect(30,49,60,33);
-x.filter=({'B&W':'grayscale(1)','Sepia':'sepia(1)','Vintage':'sepia(.6)','Cool':'hue-rotate(20deg)','Warm':'sepia(.3)','Dramatic':'contrast(1.5)','Fade':'brightness(1.2) contrast(.8)','Vivid':'saturate(2)','Matte':'contrast(.8)','Dream':'brightness(1.15) saturate(1.3)'})[n]||'none';
-x.drawImage(c,0,0);
-x.filter='none';
-});
-}
-
-function effectThumbs(){
-['glow','soft','contrast','dream','mono','film'].forEach(k=>{
-let c=$('#e-'+k),x=c.getContext('2d');
-x.fillStyle='#607b91';x.fillRect(0,0,120,82);
-x.fillStyle='#e9bd91';x.beginPath();x.arc(60,30,19,0,7);x.fill();
-x.fillStyle='#253c50';x.fillRect(30,49,60,33);
-if(k==='mono'){x.filter='grayscale(1)';x.drawImage(c,0,0);x.filter='none'}
-});
+push();let tmp=document.createElement('canvas');tmp.width=Math.round(w);tmp.height=Math.round(h);
+tmp.getContext('2d').drawImage(cv,(cv.width-w)/2,(cv.height-h)/2,w,h,0,0,tmp.width,tmp.height);replacePhoto(tmp);
 }
 
 document.querySelectorAll('.cat').forEach(b=>b.onclick=()=>{
-tab=b.dataset.tab;
-document.querySelectorAll('.cat').forEach(x=>x.classList.toggle('active',x===b));
-renderTools();
+tab=b.dataset.tab;document.querySelectorAll('.cat').forEach(x=>x.classList.toggle('active',x===b));renderTools();
 });
-
-$('#undo').onclick=()=>{
-if(!hist.length)return;
-redoStack.push(snap());
-S=JSON.parse(hist.pop());
-draw();renderTools();buttons();
-};
-
-$('#redo').onclick=()=>{
-if(!redoStack.length)return;
-hist.push(snap());
-S=JSON.parse(redoStack.pop());
-draw();renderTools();buttons();
-};
-
+$('#undo').onclick=()=>{if(!hist.length)return;redoStack.push(snapshot());restore(hist.pop())};
+$('#redo').onclick=()=>{if(!redoStack.length)return;hist.push(snapshot());restore(redoStack.pop())};
 $('#reset').onclick=()=>{
-push();S=defaults();draw();renderTools();
+if(!original)return;push();let im=new Image();im.onload=()=>{photo=im;ow=im.width;oh=im.height;S=defaults();draw();renderTools();buttons()};im.src=original;
 };
-
-$('#rotate').onclick=()=>{
-push();S.rotation=(S.rotation+90)%360;draw();
-};
-
-$('#flip').onclick=()=>{
-push();S.flip=!S.flip;draw();
-};
+$('#rotate').onclick=()=>{push();S.rotation=(S.rotation+90)%360;draw()};
+$('#flip').onclick=()=>{push();S.flip=!S.flip;draw()};
 
 $('#before').onpointerdown=()=>{
-if(photo){
-showingBefore=true;
-cv.width=ow;cv.height=oh;
-cx.filter='none';
-cx.drawImage(photo,0,0,ow,oh);
-}
+if(!original)return;showingBefore=true;let im=new Image();
+im.onload=()=>{if(!showingBefore)return;cv.width=im.width;cv.height=im.height;cx.filter='none';cx.drawImage(im,0,0)};
+im.src=original;
 };
+function endBefore(){if(showingBefore){showingBefore=false;draw()}}
+$('#before').onpointerup=endBefore;$('#before').onpointerleave=endBefore;$('#before').onpointercancel=endBefore;
 
-$('#before').onpointerup=$('#before').onpointerleave=()=>{
-if(showingBefore){showingBefore=false;draw()}
-};
+function canvasPoint(e){
+let r=cv.getBoundingClientRect();return {x:(e.clientX-r.left)*cv.width/r.width-cv.width/2,y:(e.clientY-r.top)*cv.height/r.height-cv.height/2};
+}
+cv.addEventListener('pointerdown',e=>{
+if(!photo)return;let p=canvasPoint(e),hit=null;
+for(let i=S.texts.length-1;i>=0;i--){let t=S.texts[i];if(Math.abs(p.x-t.x)<Math.max(80,t.value.length*t.size*.35)&&Math.abs(p.y-t.y)<t.size){hit={type:'text',i};break}}
+if(!hit)for(let i=S.stickers.length-1;i>=0;i--){let s=S.stickers[i];if(Math.abs(p.x-s.x)<s.size&&Math.abs(p.y-s.y)<s.size){hit={type:'sticker',i};break}}
+if(hit){push();drag={...hit,last:p};cv.setPointerCapture(e.pointerId);cv.style.cursor='grabbing'}
+});
+cv.addEventListener('pointermove',e=>{
+if(!drag)return;let p=canvasPoint(e),item=drag.type==='text'?S.texts[drag.i]:S.stickers[drag.i];
+item.x+=p.x-drag.last.x;item.y+=p.y-drag.last.y;drag.last=p;draw();
+});
+function stopDrag(){drag=null;cv.style.cursor='grab'}
+cv.addEventListener('pointerup',stopDrag);cv.addEventListener('pointercancel',stopDrag);
 
 $('#save').onclick=()=>{
-if(!photo)return;
-let a=document.createElement('a');
-a.download='editora-photo.png';
-a.href=cv.toDataURL('image/png');
-a.click();
+if(!photo)return;let a=document.createElement('a');a.download='editora-photo.png';a.href=cv.toDataURL('image/png');a.click();
 };
-
-buttons();
-renderTools();
+buttons();renderTools();
 </script>
 </body>
 </html>
